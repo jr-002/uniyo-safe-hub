@@ -15,13 +15,18 @@ import {
   User,
   Menu,
   X,
-  Shield
+  Shield,
+  LogOut
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { signOut } = useAuth();
+  const { toast } = useToast();
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
@@ -36,6 +41,23 @@ const Navigation = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out",
+      });
+      navigate("/");
+    }
+  };
 
   return (
     <>
@@ -80,6 +102,16 @@ const Navigation = () => {
                     {label}
                   </Button>
                 ))}
+                <div className="pt-4 border-t">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-red-600 hover:bg-red-50"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-5 w-5 mr-3" />
+                    Sign Out
+                  </Button>
+                </div>
               </nav>
             </div>
           </Card>
@@ -107,6 +139,16 @@ const Navigation = () => {
                 {label}
               </Button>
             ))}
+            <div className="pt-4 border-t">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-red-600 hover:bg-red-50"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-5 w-5 mr-3" />
+                Sign Out
+              </Button>
+            </div>
           </nav>
         </div>
       </div>

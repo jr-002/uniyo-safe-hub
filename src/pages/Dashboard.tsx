@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,48 @@ import {
   Clock,
   Users
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
+    if (!loading && !user) {
       navigate("/");
+      return;
     }
-  }, [navigate]);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user) {
+      // Fetch user profile
+      const fetchProfile = async () => {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        setProfile(data);
+      };
+      fetchProfile();
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="h-16 w-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <p className="text-lg text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const emergencyActions = [
     {
@@ -103,7 +133,7 @@ const Dashboard = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome back, {user.name}!
+              Welcome back, {profile?.full_name || user.email}!
             </h1>
             <p className="text-gray-600">Stay safe and stay connected with your campus community.</p>
           </div>

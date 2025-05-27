@@ -9,7 +9,204 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone_number: string
+          relationship: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone_number: string
+          relationship?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone_number?: string
+          relationship?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      incident_reports: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          is_anonymous: boolean | null
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          is_anonymous?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_anonymous?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      lost_items: {
+        Row: {
+          contact_info: string | null
+          created_at: string
+          description: string | null
+          id: string
+          item_name: string
+          location_lost: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_name: string
+          location_lost?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_name?: string
+          location_lost?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          emergency_contact: string | null
+          full_name: string
+          id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          emergency_contact?: string | null
+          full_name: string
+          id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          emergency_contact?: string | null
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      safety_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          title: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          title: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
+      university_updates: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_official: boolean | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_official?: boolean | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_official?: boolean | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -7,40 +7,80 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users, AlertTriangle, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp, signIn, user, loading } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (!loading && user) {
+    navigate("/dashboard");
+    return null;
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      // Simulate login
-      localStorage.setItem("user", JSON.stringify({ email, name: "Student User" }));
+    if (!email || !password) return;
+
+    setIsLoading(true);
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in to UniUyo Guardian.",
       });
       navigate("/dashboard");
     }
+    setIsLoading(false);
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password && name && department) {
-      // Simulate registration
-      localStorage.setItem("user", JSON.stringify({ email, name, department }));
+    if (!email || !password || !name || !department) return;
+
+    setIsLoading(true);
+    const { error } = await signUp(email, password, name, department);
+    
+    if (error) {
+      toast({
+        title: "Registration Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
       toast({
         title: "Account created!",
         description: "Welcome to UniUyo Guardian. Stay safe!",
       });
       navigate("/dashboard");
     }
+    setIsLoading(false);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="h-16 w-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <p className="text-lg text-gray-600">Loading UniUyo Guardian...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
@@ -143,8 +183,12 @@ const Index = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                      Login to Guardian
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Logging in..." : "Login to Guardian"}
                     </Button>
                   </form>
                 </TabsContent>
@@ -179,8 +223,12 @@ const Index = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
-                    <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                      Create Account
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Creating Account..." : "Create Account"}
                     </Button>
                   </form>
                 </TabsContent>
