@@ -73,9 +73,9 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
-          <Shield className="h-16 w-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <Shield className="h-16 w-16 text-uniuyo-red mx-auto mb-4 animate-pulse" />
           <p className="text-lg text-gray-600">Loading UniUyo Guardian...</p>
         </div>
       </div>
@@ -83,15 +83,15 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
-            <Shield className="h-16 w-16 text-blue-600 mr-4" />
+            <Shield className="h-16 w-16 text-uniuyo-red mr-4" />
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">UniUyo Guardian</h1>
-              <p className="text-xl text-blue-600 font-medium">Your Campus Safety Companion</p>
+              <p className="text-xl text-uniuyo-red font-medium">Your Campus Safety Companion</p>
             </div>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -102,9 +102,9 @@ const Index = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="text-center hover:shadow-lg transition-shadow">
+          <Card className="text-center hover:shadow-lg transition-shadow border-l-4 border-l-uniuyo-red">
             <CardHeader>
-              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-2" />
+              <AlertTriangle className="h-12 w-12 text-uniuyo-red mx-auto mb-2" />
               <CardTitle className="text-lg">Emergency SOS</CardTitle>
             </CardHeader>
             <CardContent>
@@ -114,9 +114,9 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="text-center hover:shadow-lg transition-shadow">
+          <Card className="text-center hover:shadow-lg transition-shadow border-l-4 border-l-uniuyo-green">
             <CardHeader>
-              <Shield className="h-12 w-12 text-blue-500 mx-auto mb-2" />
+              <Shield className="h-12 w-12 text-uniuyo-green mx-auto mb-2" />
               <CardTitle className="text-lg">Safety Reports</CardTitle>
             </CardHeader>
             <CardContent>
@@ -126,9 +126,9 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="text-center hover:shadow-lg transition-shadow">
+          <Card className="text-center hover:shadow-lg transition-shadow border-l-4 border-l-uniuyo-gold">
             <CardHeader>
-              <Users className="h-12 w-12 text-green-500 mx-auto mb-2" />
+              <Users className="h-12 w-12 text-uniuyo-gold mx-auto mb-2" />
               <CardTitle className="text-lg">Community</CardTitle>
             </CardHeader>
             <CardContent>
@@ -138,7 +138,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="text-center hover:shadow-lg transition-shadow">
+          <Card className="text-center hover:shadow-lg transition-shadow border-l-4 border-l-purple-500">
             <CardHeader>
               <BookOpen className="h-12 w-12 text-purple-500 mx-auto mb-2" />
               <CardTitle className="text-lg">Resources</CardTitle>
@@ -153,9 +153,9 @@ const Index = () => {
 
         {/* Auth Section */}
         <div className="max-w-md mx-auto">
-          <Card>
+          <Card className="border-t-4 border-t-uniuyo-red">
             <CardHeader>
-              <CardTitle className="text-center">Get Started</CardTitle>
+              <CardTitle className="text-center text-uniuyo-red">Get Started</CardTitle>
               <CardDescription className="text-center">
                 Join the UniUyo Guardian community
               </CardDescription>
@@ -185,7 +185,7 @@ const Index = () => {
                     />
                     <Button 
                       type="submit" 
-                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      className="w-full bg-uniuyo-red hover:bg-uniuyo-red/90"
                       disabled={isLoading}
                     >
                       {isLoading ? "Logging in..." : "Login to Guardian"}
@@ -225,7 +225,7 @@ const Index = () => {
                     />
                     <Button 
                       type="submit" 
-                      className="w-full bg-green-600 hover:bg-green-700"
+                      className="w-full bg-uniuyo-green hover:bg-uniuyo-green/90"
                       disabled={isLoading}
                     >
                       {isLoading ? "Creating Account..." : "Create Account"}

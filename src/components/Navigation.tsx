@@ -64,8 +64,8 @@ const Navigation = () => {
       {/* Mobile Header */}
       <div className="lg:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Shield className="h-8 w-8 text-blue-600" />
-          <span className="font-bold text-lg">Guardian</span>
+          <Shield className="h-8 w-8 text-uniuyo-red" />
+          <span className="font-bold text-lg text-uniuyo-red">Guardian</span>
         </div>
         <Button
           variant="ghost"
@@ -82,8 +82,8 @@ const Navigation = () => {
           <Card className="w-64 h-full bg-white shadow-xl">
             <div className="p-6">
               <div className="flex items-center space-x-2 mb-8">
-                <Shield className="h-8 w-8 text-blue-600" />
-                <span className="font-bold text-lg">UniUyo Guardian</span>
+                <Shield className="h-8 w-8 text-uniuyo-red" />
+                <span className="font-bold text-lg text-uniuyo-red">UniUyo Guardian</span>
               </div>
               <nav className="space-y-2">
                 {navItems.map(({ icon: Icon, label, path }) => (
@@ -91,7 +91,7 @@ const Navigation = () => {
                     key={path}
                     variant={isActive(path) ? "default" : "ghost"}
                     className={`w-full justify-start ${
-                      isActive(path) ? "bg-blue-600 text-white" : "hover:bg-gray-100"
+                      isActive(path) ? "bg-uniuyo-red text-white" : "hover:bg-gray-100"
                     }`}
                     onClick={() => {
                       navigate(path);
@@ -122,8 +122,8 @@ const Navigation = () => {
       <div className="hidden lg:block fixed left-0 top-0 h-full w-64 bg-white shadow-lg border-r z-40">
         <div className="p-6">
           <div className="flex items-center space-x-2 mb-8">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <span className="font-bold text-lg">UniUyo Guardian</span>
+            <Shield className="h-8 w-8 text-uniuyo-red" />
+            <span className="font-bold text-lg text-uniuyo-red">UniUyo Guardian</span>
           </div>
           <nav className="space-y-2">
             {navItems.map(({ icon: Icon, label, path }) => (
@@ -131,7 +131,7 @@ const Navigation = () => {
                 key={path}
                 variant={isActive(path) ? "default" : "ghost"}
                 className={`w-full justify-start ${
-                  isActive(path) ? "bg-blue-600 text-white" : "hover:bg-gray-100"
+                  isActive(path) ? "bg-uniuyo-red text-white" : "hover:bg-gray-100"
                 }`}
                 onClick={() => navigate(path)}
               >
@@ -162,7 +162,7 @@ const Navigation = () => {
               variant="ghost"
               size="sm"
               className={`flex flex-col h-16 ${
-                isActive(path) ? "text-blue-600 bg-blue-50" : "text-gray-600"
+                isActive(path) ? "text-uniuyo-red bg-red-50" : "text-gray-600"
               }`}
               onClick={() => navigate(path)}
             >
