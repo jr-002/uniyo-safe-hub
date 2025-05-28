@@ -1,4 +1,5 @@
-import { Map, NavigationControl } from 'maplibre-gl';
+
+import { Map, NavigationControl, Marker } from 'maplibre-gl';
 
 export const initMap = (container: HTMLElement, center: [number, number] = [-0.118092, 51.509865]) => {
   return new Map({
@@ -18,7 +19,7 @@ export const addMarker = (map: Map, coordinates: [number, number]) => {
   el.style.borderRadius = '50%';
   el.style.border = '2px solid white';
 
-  new maplibregl.Marker(el)
+  new Marker(el)
     .setLngLat(coordinates)
     .addTo(map);
 };
