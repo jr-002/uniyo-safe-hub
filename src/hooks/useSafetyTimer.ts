@@ -30,6 +30,54 @@ export interface Guardian {
   updated_at: string;
 }
 
+// Helper function to parse point data from Supabase
+const parsePoint = (pointData: any): { x: number; y: number } | undefined => {
+  if (!pointData) return undefined;
+  
+  // Handle different possible formats from Supabase
+  if (typeof pointData === 'string') {
+    const match = pointData.match(/\(([^,]+),([^)]+)\)/);
+    if (match) {
+      return { x: parseFloat(match[1]), y: parseFloat(match[2]) };
+    }
+  }
+  
+  if (pointData && typeof pointData === 'object') {
+    if ('x' in pointData && 'y' in pointData) {
+      return { x: pointData.x, y: pointData.y };
+    }
+  }
+  
+  return undefined;
+};
+
+// Helper function to transform Supabase data to our interface
+const transformSafetyTimer = (data: any): SafetyTimer => ({
+  id: data.id,
+  user_id: data.user_id,
+  start_time: data.start_time,
+  duration_seconds: data.duration_seconds,
+  destination_text: data.destination_text,
+  destination_coords: parsePoint(data.destination_coords),
+  status: data.status as SafetyTimer['status'],
+  last_known_location: parsePoint(data.last_known_location),
+  created_at: data.created_at,
+  updated_at: data.updated_at,
+});
+
+// Helper function to transform Guardian data
+const transformGuardian = (data: any): Guardian => ({
+  id: data.id,
+  user_id: data.user_id,
+  guardian_user_id: data.guardian_user_id,
+  guardian_email: data.guardian_email,
+  guardian_phone: data.guardian_phone,
+  guardian_name: data.guardian_name,
+  status: data.status as Guardian['status'],
+  created_at: data.created_at,
+  updated_at: data.updated_at,
+});
+
 export const useSafetyTimer = () => {
   const [activeTimer, setActiveTimer] = useState<SafetyTimer | null>(null);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
@@ -78,14 +126,14 @@ export const useSafetyTimer = () => {
         .select('*')
         .eq('user_id', user?.id)
         .eq('status', 'active')
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error loading active timer:', error);
         return;
       }
 
-      setActiveTimer(data);
+      setActiveTimer(data ? transformSafetyTimer(data) : null);
     } catch (error) {
       console.error('Error loading active timer:', error);
     }
@@ -104,7 +152,7 @@ export const useSafetyTimer = () => {
         return;
       }
 
-      setGuardians(data || []);
+      setGuardians(data ? data.map(transformGuardian) : []);
     } catch (error) {
       console.error('Error loading guardians:', error);
     }
@@ -152,7 +200,7 @@ export const useSafetyTimer = () => {
         if (guardiansError) throw guardiansError;
       }
 
-      setActiveTimer(timer);
+      setActiveTimer(transformSafetyTimer(timer));
       toast({
         title: "Safety Timer Started",
         description: `Timer set for ${durationMinutes} minutes`,
@@ -248,7 +296,7 @@ export const useSafetyTimer = () => {
 
       if (error) throw error;
 
-      setGuardians(prev => [...prev, data]);
+      setGuardians(prev => [...prev, transformGuardian(data)]);
       toast({
         title: "Guardian Added",
         description: `${guardianData.guardian_name} has been added to your guardians`,
