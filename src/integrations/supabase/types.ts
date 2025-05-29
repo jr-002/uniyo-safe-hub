@@ -36,6 +36,42 @@ export type Database = {
         }
         Relationships: []
       }
+      guardians: {
+        Row: {
+          created_at: string | null
+          guardian_email: string | null
+          guardian_name: string
+          guardian_phone: string | null
+          guardian_user_id: string | null
+          id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          guardian_email?: string | null
+          guardian_name: string
+          guardian_phone?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          guardian_email?: string | null
+          guardian_name?: string
+          guardian_phone?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       incident_reports: {
         Row: {
           category: string
@@ -176,6 +212,83 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      safety_timers: {
+        Row: {
+          created_at: string | null
+          destination_coords: unknown | null
+          destination_text: string | null
+          duration_seconds: number
+          id: string
+          last_known_location: unknown | null
+          start_time: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          destination_coords?: unknown | null
+          destination_text?: string | null
+          duration_seconds: number
+          id?: string
+          last_known_location?: unknown | null
+          start_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          destination_coords?: unknown | null
+          destination_text?: string | null
+          duration_seconds?: number
+          id?: string
+          last_known_location?: unknown | null
+          start_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      timer_guardians: {
+        Row: {
+          created_at: string | null
+          guardian_contact_info: string | null
+          guardian_name: string | null
+          guardian_user_id: string | null
+          id: string
+          notified: boolean | null
+          timer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          guardian_contact_info?: string | null
+          guardian_name?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          notified?: boolean | null
+          timer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          guardian_contact_info?: string | null
+          guardian_name?: string | null
+          guardian_user_id?: string | null
+          id?: string
+          notified?: boolean | null
+          timer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timer_guardians_timer_id_fkey"
+            columns: ["timer_id"]
+            isOneToOne: false
+            referencedRelation: "safety_timers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       university_updates: {
         Row: {

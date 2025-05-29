@@ -14,6 +14,7 @@ import LostFound from "./pages/LostFound";
 import Updates from "./pages/Updates";
 import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
+import SafetyTimerPage from "./pages/SafetyTimer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/updates" element={<Updates />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/safety-timer" element={<SafetyTimerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

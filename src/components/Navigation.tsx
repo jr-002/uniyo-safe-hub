@@ -16,7 +16,8 @@ import {
   Menu,
   X,
   Shield,
-  LogOut
+  LogOut,
+  Timer
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -31,6 +32,7 @@ const Navigation = () => {
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
     { icon: AlertTriangle, label: "Emergency", path: "/emergency" },
+    { icon: Timer, label: "Safety Timer", path: "/safety-timer" },
     { icon: FileText, label: "Reports", path: "/reports" },
     { icon: Bell, label: "Alerts", path: "/alerts" },
     { icon: Phone, label: "Directory", path: "/directory" },
