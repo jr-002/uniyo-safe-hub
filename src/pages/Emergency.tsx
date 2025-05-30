@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle, Phone, MapPin, Clock, Users, Shield } from "lucide-react";
+import { AlertTriangle, Phone, MapPin, Clock, Users, Shield, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import AIEmergencyContext from "@/components/emergency/AIEmergencyContext";
 
 const Emergency = () => {
   const [isSOSActive, setIsSOSActive] = useState(false);
   const [emergencyContact, setEmergencyContact] = useState("");
   const [sosTimer, setSosTimer] = useState(0);
+  const [aiContext, setAiContext] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -25,9 +27,15 @@ const Emergency = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         
+        let alertMessage = `🚨 SOS Alert Sent with location (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+        
+        if (aiContext) {
+          alertMessage += `\n\nAI Context: ${aiContext}`;
+        }
+        
         toast({
           title: "🚨 SOS Alert Sent!",
-          description: `Emergency alert sent with your location (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`,
+          description: alertMessage,
           variant: "destructive",
         });
 
@@ -77,50 +85,58 @@ const Emergency = () => {
         <div className="p-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-red-700 mb-2">Emergency Center</h1>
-            <p className="text-gray-600">Quick access to emergency services and SOS alerts</p>
+            <p className="text-gray-600">Quick access to emergency services and SOS alerts with AI-powered context</p>
           </div>
 
-          {/* SOS Button */}
-          <Card className="mb-8 border-red-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-red-700">Emergency SOS</CardTitle>
-              <CardDescription>
-                Press and hold for 3 seconds to send emergency alert with your location
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              {!isSOSActive ? (
-                <Button
-                  className="w-48 h-48 rounded-full bg-red-500 hover:bg-red-600 text-white text-2xl font-bold shadow-lg hover:shadow-xl transition-all"
-                  onMouseDown={() => {
-                    setTimeout(activateSOS, 3000);
-                  }}
-                  onTouchStart={() => {
-                    setTimeout(activateSOS, 3000);
-                  }}
-                >
-                  <div className="flex flex-col items-center">
-                    <AlertTriangle className="h-16 w-16 mb-2" />
-                    <span>SOS</span>
-                    <span className="text-sm font-normal">Hold for 3s</span>
-                  </div>
-                </Button>
-              ) : (
-                <div className="space-y-4">
-                  <div className="w-48 h-48 mx-auto rounded-full bg-red-500 text-white flex items-center justify-center animate-pulse">
-                    <div className="text-center">
-                      <AlertTriangle className="h-16 w-16 mb-2 mx-auto" />
-                      <div className="text-2xl font-bold">SOS ACTIVE</div>
-                      <div className="text-lg">{sosTimer}s</div>
+          <div className="grid lg:grid-cols-2 gap-6 mb-8">
+            {/* SOS Button */}
+            <Card className="border-red-200">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl text-red-700">Emergency SOS</CardTitle>
+                <CardDescription>
+                  Press and hold for 3 seconds to send emergency alert with your location
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                {!isSOSActive ? (
+                  <Button
+                    className="w-48 h-48 rounded-full bg-red-500 hover:bg-red-600 text-white text-2xl font-bold shadow-lg hover:shadow-xl transition-all"
+                    onMouseDown={() => {
+                      setTimeout(activateSOS, 3000);
+                    }}
+                    onTouchStart={() => {
+                      setTimeout(activateSOS, 3000);
+                    }}
+                  >
+                    <div className="flex flex-col items-center">
+                      <AlertTriangle className="h-16 w-16 mb-2" />
+                      <span>SOS</span>
+                      <span className="text-sm font-normal">Hold for 3s</span>
                     </div>
-                  </div>
-                  <Button variant="outline" onClick={cancelSOS}>
-                    Cancel SOS
                   </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="w-48 h-48 mx-auto rounded-full bg-red-500 text-white flex items-center justify-center animate-pulse">
+                      <div className="text-center">
+                        <AlertTriangle className="h-16 w-16 mb-2 mx-auto" />
+                        <div className="text-2xl font-bold">SOS ACTIVE</div>
+                        <div className="text-lg">{sosTimer}s</div>
+                      </div>
+                    </div>
+                    <Button variant="outline" onClick={cancelSOS}>
+                      Cancel SOS
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* AI Emergency Context */}
+            <AIEmergencyContext
+              emergencyType="SOS"
+              onContextGenerated={setAiContext}
+            />
+          </div>
 
           {/* Emergency Contacts Setup */}
           <Card className="mb-8">
@@ -191,26 +207,48 @@ const Emergency = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Shield className="h-5 w-5 mr-2" />
-                Safety Tips
+                Safety Tips & AI Features
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                  <p>Always inform someone about your whereabouts when going out</p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-3 text-sm">
+                  <h3 className="font-semibold text-green-700">Safety Tips</h3>
+                  <div className="flex items-start space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <p>Always inform someone about your whereabouts when going out</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <p>Keep your phone charged and carry a power bank</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <p>Trust your instincts - if something feels wrong, seek help</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <p>Use well-lit and populated routes, especially at night</p>
+                  </div>
                 </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                  <p>Keep your phone charged and carry a power bank</p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                  <p>Trust your instincts - if something feels wrong, seek help</p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                  <p>Use well-lit and populated routes, especially at night</p>
+                <div className="space-y-3 text-sm">
+                  <h3 className="font-semibold text-orange-700">AI-Enhanced Emergency Features</h3>
+                  <div className="flex items-start space-x-2">
+                    <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
+                    <p>AI generates context for emergency responders</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
+                    <p>Automatic user profile and location sharing</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
+                    <p>Recent campus incident analysis for better response</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
+                    <p>Intelligent emergency contact prioritization</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
