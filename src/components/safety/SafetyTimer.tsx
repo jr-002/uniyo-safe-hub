@@ -6,14 +6,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Timer, MapPin, Users, Play, Square } from 'lucide-react';
+import { Timer, MapPin, Users, Play, Square, Brain } from 'lucide-react';
 import { useSafetyTimer } from '@/hooks/useSafetyTimer';
 import { useAuth } from '@/hooks/useAuth';
+import AIRouteAnalysis from './AIRouteAnalysis';
 
 const SafetyTimer = () => {
   const [duration, setDuration] = useState<string>('30');
   const [destination, setDestination] = useState('');
   const [selectedGuardians, setSelectedGuardians] = useState<string[]>([]);
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false);
+  const [routeAnalysis, setRouteAnalysis] = useState<any>(null);
   const { activeTimer, guardians, loading, startTimer, stopTimer, getTimeRemaining } = useSafetyTimer();
   const { user } = useAuth();
 
@@ -29,9 +32,14 @@ const SafetyTimer = () => {
 
   const handleStartTimer = () => {
     if (!destination.trim()) return;
-    startTimer(parseInt(duration), destination, selectedGuardians);
+    
+    // Use recommended duration from AI analysis if available
+    const finalDuration = routeAnalysis?.analysis?.recommendedDuration || parseInt(duration);
+    startTimer(finalDuration, destination, selectedGuardians);
     setDestination('');
     setSelectedGuardians([]);
+    setShowAIAnalysis(false);
+    setRouteAnalysis(null);
   };
 
   const handleStopTimer = () => {
@@ -47,6 +55,20 @@ const SafetyTimer = () => {
   };
 
   const timeRemaining = getTimeRemaining();
+
+  const handleAnalysisComplete = (analysis: any) => {
+    setRouteAnalysis(analysis);
+    // Auto-update duration if AI suggests a different one
+    if (analysis?.analysis?.recommendedDuration) {
+      const newDuration = analysis.analysis.recommendedDuration;
+      // Find the closest duration option
+      const durations = [15, 30, 45, 60, 120];
+      const closest = durations.reduce((prev, curr) => 
+        Math.abs(curr - newDuration) < Math.abs(prev - newDuration) ? curr : prev
+      );
+      setDuration(closest.toString());
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -106,6 +128,12 @@ const SafetyTimer = () => {
                   <SelectItem value="120">2 hours</SelectItem>
                 </SelectContent>
               </Select>
+              {routeAnalysis?.analysis?.recommendedDuration && 
+               routeAnalysis.analysis.recommendedDuration !== parseInt(duration) && (
+                <p className="text-sm text-blue-600 mt-1">
+                  AI suggests {routeAnalysis.analysis.recommendedDuration} minutes for this route
+                </p>
+              )}
             </div>
 
             <div>
@@ -117,6 +145,19 @@ const SafetyTimer = () => {
                 placeholder="Where are you going?"
                 className="mt-1"
               />
+            </div>
+
+            {/* AI Analysis Toggle */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="ai-analysis"
+                checked={showAIAnalysis}
+                onCheckedChange={setShowAIAnalysis}
+              />
+              <Label htmlFor="ai-analysis" className="text-sm flex items-center space-x-1">
+                <Brain className="h-4 w-4" />
+                <span>Get AI route analysis and safety recommendations</span>
+              </Label>
             </div>
 
             {guardians.length > 0 && (
@@ -159,6 +200,15 @@ const SafetyTimer = () => {
           </div>
         )}
       </Card>
+
+      {/* AI Route Analysis */}
+      {showAIAnalysis && !activeTimer && (
+        <AIRouteAnalysis
+          destination={destination}
+          duration={parseInt(duration)}
+          onAnalysisComplete={handleAnalysisComplete}
+        />
+      )}
 
       {guardians.length === 0 && (
         <Card className="p-6">
