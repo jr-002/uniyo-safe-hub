@@ -9,8 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { FileText, MapPin, Clock, AlertTriangle, Shield, Zap } from "lucide-react";
+import { FileText, MapPin, Clock, AlertTriangle, Shield, Zap, Brain, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useIncidentAI } from "@/hooks/useIncidentAI";
 
 const Reports = () => {
   const [reportType, setReportType] = useState("");
@@ -36,6 +37,7 @@ const Reports = () => {
     }
   ]);
   const { toast } = useToast();
+  const { isAnalyzing, analysis, analyzeIncident, clearAnalysis } = useIncidentAI();
 
   const reportTypes = [
     { value: "theft", label: "Theft", icon: "🚨" },
@@ -45,6 +47,12 @@ const Reports = () => {
     { value: "safety", label: "Safety Concern", icon: "🛡️" },
     { value: "other", label: "Other", icon: "📝" }
   ];
+
+  const handleAnalyzeIncident = async () => {
+    if (description && location) {
+      await analyzeIncident(description, location, reportType);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +78,7 @@ const Reports = () => {
       setLocation("");
       setDescription("");
       setIsAnonymous(false);
+      clearAnalysis();
     }
   };
 
@@ -79,6 +88,16 @@ const Reports = () => {
       case "Under Review": return "bg-yellow-100 text-yellow-800";
       case "Resolved": return "bg-green-100 text-green-800";
       default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "critical": return "bg-red-100 text-red-800 border-red-300";
+      case "high": return "bg-orange-100 text-orange-800 border-orange-300";
+      case "medium": return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "low": return "bg-green-100 text-green-800 border-green-300";
+      default: return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
 
@@ -154,6 +173,73 @@ const Reports = () => {
                     />
                     <Label htmlFor="anonymous">Submit anonymously</Label>
                   </div>
+
+                  {/* AI Analysis Section */}
+                  {description && location && (
+                    <div className="border-t pt-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-medium text-gray-700">AI Analysis</h3>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleAnalyzeIncident}
+                          disabled={isAnalyzing}
+                        >
+                          {isAnalyzing ? (
+                            <>
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              Analyzing...
+                            </>
+                          ) : (
+                            <>
+                              <Brain className="h-4 w-4 mr-2" />
+                              Analyze Report
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      {analysis && (
+                        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Badge className={getPriorityColor(analysis.analysis.priorityLevel)}>
+                              {analysis.analysis.priorityLevel.toUpperCase()} Priority
+                            </Badge>
+                            <Badge variant="outline" className="text-blue-700 border-blue-300">
+                              Category: {analysis.analysis.suggestedCategory}
+                            </Badge>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-700 mb-1">Risk Assessment:</h4>
+                            <p className="text-sm text-gray-600">{analysis.analysis.riskAssessment}</p>
+                          </div>
+
+                          {analysis.analysis.recommendedActions.length > 0 && (
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-700 mb-1">Recommended Actions:</h4>
+                              <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                                {analysis.analysis.recommendedActions.map((action, index) => (
+                                  <li key={index}>{action}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {analysis.analysis.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {analysis.analysis.tags.map((tag, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <Button type="submit" className="w-full">
                     Submit Report
