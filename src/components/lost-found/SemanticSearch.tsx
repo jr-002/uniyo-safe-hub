@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +27,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
   };
 
   // Apply search results to filter items
-  React.useEffect(() => {
+  useEffect(() => {
     if (searchResults?.matches) {
       const matchedItemIds = searchResults.matches.map(match => match.id);
       const filteredItems = items.filter(item => matchedItemIds.includes(item.id));
