@@ -152,7 +152,7 @@ const SafetyTimer = () => {
               <Checkbox
                 id="ai-analysis"
                 checked={showAIAnalysis}
-                onCheckedChange={setShowAIAnalysis}
+                onCheckedChange={(checked) => setShowAIAnalysis(checked === true)}
               />
               <Label htmlFor="ai-analysis" className="text-sm flex items-center space-x-1">
                 <Brain className="h-4 w-4" />
@@ -170,7 +170,7 @@ const SafetyTimer = () => {
                         id={guardian.id}
                         checked={selectedGuardians.includes(guardian.id)}
                         onCheckedChange={(checked) => {
-                          if (checked) {
+                          if (checked === true) {
                             setSelectedGuardians(prev => [...prev, guardian.id]);
                           } else {
                             setSelectedGuardians(prev => prev.filter(id => id !== guardian.id));
