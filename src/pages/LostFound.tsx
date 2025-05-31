@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -9,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Clock, User, CreditCard, Smartphone, Backpack, Key } from "lucide-react";
+import { Search, MapPin, Clock, User, CreditCard, Smartphone, Backpack, Key, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { SemanticSearch } from "@/components/lost-found/SemanticSearch";
 
 const LostFound = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +18,7 @@ const LostFound = () => {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
+  const [useAISearch, setUseAISearch] = useState(true);
   const { toast } = useToast();
 
   const [lostItems, setLostItems] = useState([
@@ -79,6 +80,10 @@ const LostFound = () => {
     }
   ]);
 
+  // State for filtered results
+  const [filteredLostItems, setFilteredLostItems] = useState(lostItems);
+  const [filteredFoundItems, setFilteredFoundItems] = useState(foundItems);
+
   const itemTypes = [
     { value: "id", label: "Student ID", icon: CreditCard },
     { value: "phone", label: "Phone", icon: Smartphone },
@@ -104,6 +109,7 @@ const LostFound = () => {
       };
       
       setLostItems([newLostItem, ...lostItems]);
+      setFilteredLostItems([newLostItem, ...filteredLostItems]);
       
       toast({
         title: "Item Reported as Lost",
@@ -133,6 +139,7 @@ const LostFound = () => {
       };
       
       setFoundItems([newFoundItem, ...foundItems]);
+      setFilteredFoundItems([newFoundItem, ...filteredFoundItems]);
       
       toast({
         title: "Item Reported as Found",
@@ -153,17 +160,32 @@ const LostFound = () => {
     return <IconComponent className="h-5 w-5" />;
   };
 
-  const filteredLostItems = lostItems.filter(item =>
-    item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Handle traditional keyword search
+  const handleKeywordSearch = () => {
+    const lostFiltered = lostItems.filter(item =>
+      item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-  const filteredFoundItems = foundItems.filter(item =>
-    item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    const foundFiltered = foundItems.filter(item =>
+      item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setFilteredLostItems(lostFiltered);
+    setFilteredFoundItems(foundFiltered);
+  };
+
+  // Handle AI search results
+  const handleAISearchResults = (results: any[]) => {
+    const lostResults = results.filter(item => item.status === 'Lost' || lostItems.find(li => li.id === item.id));
+    const foundResults = results.filter(item => item.status === 'Found' || foundItems.find(fi => fi.id === item.id));
+    
+    setFilteredLostItems(lostResults.length > 0 ? lostResults : lostItems.filter(item => results.find(r => r.id === item.id)));
+    setFilteredFoundItems(foundResults.length > 0 ? foundResults : foundItems.filter(item => results.find(r => r.id === item.id)));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -225,20 +247,65 @@ const LostFound = () => {
             </TabsList>
 
             <TabsContent value="browse" className="space-y-6">
-              {/* Search */}
+              {/* Search Toggle */}
               <Card>
-                <CardContent className="p-6">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search lost and found items..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <Brain className="h-5 w-5 text-purple-600" />
+                      <span className="font-medium">Search Mode</span>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant={useAISearch ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUseAISearch(true)}
+                        className={useAISearch ? "bg-purple-600 hover:bg-purple-700" : ""}
+                      >
+                        <Brain className="h-4 w-4 mr-1" />
+                        AI Search
+                      </Button>
+                      <Button
+                        variant={!useAISearch ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setUseAISearch(false)}
+                      >
+                        <Search className="h-4 w-4 mr-1" />
+                        Keyword Search
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Search Interface */}
+              {useAISearch ? (
+                <SemanticSearch
+                  items={[...lostItems, ...foundItems]}
+                  onSearchResults={handleAISearchResults}
+                  searchType="both"
+                />
+              ) : (
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex space-x-2">
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          placeholder="Search lost and found items..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleKeywordSearch()}
+                          className="pl-10"
+                        />
+                      </div>
+                      <Button onClick={handleKeywordSearch}>
+                        Search
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Lost Items */}
@@ -317,8 +384,19 @@ const LostFound = () => {
                   </CardContent>
                 </Card>
               </div>
+
+              {(filteredLostItems.length === 0 && filteredFoundItems.length === 0) && (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No items found</h3>
+                    <p className="text-gray-600">Try adjusting your search terms or using AI search for better results.</p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
+            {/* Report Lost Tab */}
             <TabsContent value="report-lost">
               <Card>
                 <CardHeader>
@@ -387,6 +465,7 @@ const LostFound = () => {
               </Card>
             </TabsContent>
 
+            {/* Report Found Tab */}
             <TabsContent value="report-found">
               <Card>
                 <CardHeader>
