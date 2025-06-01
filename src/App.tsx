@@ -16,6 +16,8 @@ import Updates from "./pages/Updates";
 import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
 import SafetyTimerPage from "./pages/SafetyTimer";
+import AuthCallback from "./pages/AuthCallback";
+import VerificationPending from "./pages/VerificationPending";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/safety-timer" element={<SafetyTimerPage />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/verification-pending" element={<VerificationPending />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

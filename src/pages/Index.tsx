@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ const Index = () => {
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showVerificationPending, setShowVerificationPending] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signUp, signIn, user, loading } = useAuth();
@@ -24,6 +24,12 @@ const Index = () => {
   // Redirect if already logged in
   if (!loading && user) {
     navigate("/dashboard");
+    return null;
+  }
+
+  // Show verification pending page if needed
+  if (showVerificationPending) {
+    navigate("/verification-pending");
     return null;
   }
 
@@ -55,7 +61,7 @@ const Index = () => {
     if (!email || !password || !name || !department) return;
 
     setIsLoading(true);
-    const { error } = await signUp(email, password, name, department);
+    const { data, error } = await signUp(email, password, name, department);
     
     if (error) {
       toast({
@@ -65,10 +71,10 @@ const Index = () => {
       });
     } else {
       toast({
-        title: "Account created!",
-        description: "Welcome to UniUyo Guardian. Stay safe!",
+        title: "Registration Successful!",
+        description: "Please check your email to verify your account.",
       });
-      navigate("/dashboard");
+      setShowVerificationPending(true);
     }
     setIsLoading(false);
   };
