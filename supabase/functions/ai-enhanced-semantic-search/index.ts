@@ -3,9 +3,6 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { ChatGroq } from "https://esm.sh/@langchain/groq@0.0.14";
 import { OpenAIEmbeddings } from "https://esm.sh/@langchain/openai@0.0.10";
-import { MemoryVectorStore } from "https://esm.sh/@langchain/core@0.2.31/vectorstores/memory";
-import { Document } from "https://esm.sh/@langchain/core@0.2.31/documents";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.8';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,23 +30,33 @@ serve(async (req) => {
       modelName: "text-embedding-3-small"
     });
 
-    // Create documents from items
-    const documents = items.map((item: any) => new Document({
-      pageContent: `${item.type || item.item_name}: ${item.description} at ${item.location || item.location_lost}`,
-      metadata: {
-        id: item.id,
-        type: item.type || item.item_name,
-        location: item.location || item.location_lost,
-        timeReported: item.timeReported || item.timeFound || item.created_at,
-        status: item.status
-      }
-    }));
+    console.log('Processing enhanced semantic search...');
 
-    // Create vector store
-    const vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
+    // Create embeddings for search query
+    const queryEmbedding = await embeddings.embedQuery(searchQuery);
+    
+    // Create embeddings for all items and calculate similarity
+    const itemsWithScores = await Promise.all(
+      items.map(async (item: any) => {
+        const itemText = `${item.type || item.item_name}: ${item.description} at ${item.location || item.location_lost}`;
+        const itemEmbedding = await embeddings.embedQuery(itemText);
+        
+        // Calculate cosine similarity
+        const similarity = cosineSimilarity(queryEmbedding, itemEmbedding);
+        
+        return {
+          item,
+          similarity,
+          text: itemText
+        };
+      })
+    );
 
-    // Perform similarity search
-    const similarDocs = await vectorStore.similaritySearchWithScore(searchQuery, 5);
+    // Filter and sort by similarity
+    const relevantItems = itemsWithScores
+      .filter(({ similarity }) => similarity > 0.3)
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 5);
 
     // Use Groq for intelligent analysis
     const chatModel = new ChatGroq({
@@ -64,8 +71,8 @@ serve(async (req) => {
     Search Query: "${searchQuery}"
     
     Similar Items Found:
-    ${similarDocs.map(([doc, score]) => 
-      `- Score: ${score.toFixed(3)} | ${doc.pageContent} | Metadata: ${JSON.stringify(doc.metadata)}`
+    ${relevantItems.map(({ item, similarity, text }) => 
+      `- Similarity: ${similarity.toFixed(3)} | ${text} | ID: ${item.id}`
     ).join('\n')}
     
     Provide a JSON response with:
@@ -94,18 +101,16 @@ serve(async (req) => {
       analysis = JSON.parse(response.content as string);
     } catch (parseError) {
       analysis = {
-        matches: similarDocs
-          .filter(([, score]) => score > 0.3)
-          .map(([doc, score], index) => ({
-            id: doc.metadata.id,
-            score: Math.round((1 - score) * 100),
-            reasoning: "Vector similarity match",
-            highlights: [searchQuery],
-            vectorScore: 1 - score
-          })),
+        matches: relevantItems.map(({ item, similarity }, index) => ({
+          id: item.id,
+          score: Math.round(similarity * 100),
+          reasoning: "Vector similarity match based on semantic understanding",
+          highlights: [searchQuery],
+          vectorScore: similarity
+        })),
         suggestions: ["Try more descriptive terms", "Include brand names or colors"],
-        summary: "Vector-based search completed",
-        vectorAnalysis: `Found ${similarDocs.length} similar items using embeddings`
+        summary: "Vector-based search completed using OpenAI embeddings",
+        vectorAnalysis: `Found ${relevantItems.length} similar items using semantic embeddings`
       };
     }
 
@@ -126,3 +131,29 @@ serve(async (req) => {
     });
   }
 });
+
+// Helper function to calculate cosine similarity
+function cosineSimilarity(a: number[], b: number[]): number {
+  if (a.length !== b.length) {
+    throw new Error('Vectors must have the same length');
+  }
+  
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  
+  for (let i = 0; i < a.length; i++) {
+    dotProduct += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  
+  normA = Math.sqrt(normA);
+  normB = Math.sqrt(normB);
+  
+  if (normA === 0 || normB === 0) {
+    return 0;
+  }
+  
+  return dotProduct / (normA * normB);
+}
