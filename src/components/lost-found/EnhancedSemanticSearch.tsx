@@ -50,10 +50,10 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
           <Brain className="h-5 w-5 text-purple-600" />
           <span>Enhanced AI Search</span>
           <Zap className="h-4 w-4 text-yellow-500" />
-          <Badge variant="secondary" className="ml-2">Vector + LangChain</Badge>
+          <Badge variant="secondary" className="ml-2">Groq Semantic</Badge>
         </CardTitle>
         <CardDescription>
-          Advanced semantic search with vector embeddings, memory, and intelligent reasoning
+          Advanced semantic search powered by Groq's language understanding and intelligent reasoning
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -106,11 +106,11 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
             <div className="flex items-center justify-between">
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <Brain className="h-3 w-3" />
-                <span>{searchResults.matches.length} enhanced matches</span>
+                <span>{searchResults.matches.length} semantic matches</span>
               </Badge>
               <Badge variant="outline" className="text-green-600">
                 <Zap className="h-3 w-3 mr-1" />
-                Vector Search Active
+                Groq Semantic Active
               </Badge>
             </div>
 
@@ -121,10 +121,10 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
               </div>
             )}
 
-            {searchResults.vectorAnalysis && (
+            {searchResults.semanticAnalysis && (
               <div className="bg-blue-50 p-3 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-1">Vector Analysis</h4>
-                <p className="text-sm text-blue-700">{searchResults.vectorAnalysis}</p>
+                <h4 className="font-medium text-blue-800 mb-1">Semantic Analysis</h4>
+                <p className="text-sm text-blue-700">{searchResults.semanticAnalysis}</p>
               </div>
             )}
 
@@ -144,17 +144,17 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
 
             {searchResults.matches.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-sm font-medium">Enhanced Match Details:</h4>
+                <h4 className="text-sm font-medium">Semantic Match Details:</h4>
                 {searchResults.matches.slice(0, 3).map((match, index) => (
                   <div key={index} className="bg-green-50 p-3 rounded text-sm border border-green-200">
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-medium">Match {index + 1}</span>
                       <div className="flex space-x-2">
                         <Badge variant="outline" className="text-green-700">
-                          {match.score}% semantic
+                          {match.score}% match
                         </Badge>
                         <Badge variant="outline" className="text-blue-700">
-                          {(match.vectorScore * 100).toFixed(0)}% vector
+                          {(match.semanticScore * 100).toFixed(0)}% semantic
                         </Badge>
                       </div>
                     </div>

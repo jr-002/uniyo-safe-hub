@@ -8,11 +8,11 @@ interface EnhancedSearchResult {
     score: number;
     reasoning: string;
     highlights: string[];
-    vectorScore: number;
+    semanticScore: number;
   }>;
   suggestions: string[];
   summary: string;
-  vectorAnalysis: string;
+  semanticAnalysis: string;
 }
 
 export const useEnhancedSemanticSearch = () => {
@@ -34,7 +34,7 @@ export const useEnhancedSemanticSearch = () => {
     setError(null);
 
     try {
-      console.log('Performing enhanced semantic search with vectors...');
+      console.log('Performing enhanced semantic search with Groq...');
 
       const { data, error: functionError } = await supabase.functions.invoke('ai-enhanced-semantic-search', {
         body: {
@@ -58,7 +58,7 @@ export const useEnhancedSemanticSearch = () => {
         matches: [],
         suggestions: ['Try using different keywords', 'Include more descriptive terms'],
         summary: 'Enhanced search encountered an error',
-        vectorAnalysis: 'Vector search unavailable'
+        semanticAnalysis: 'Groq-based semantic search unavailable'
       });
     } finally {
       setIsSearching(false);
