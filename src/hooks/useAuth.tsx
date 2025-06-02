@@ -12,6 +12,7 @@ export const useAuth = () => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email_confirmed_at);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -29,7 +30,10 @@ export const useAuth = () => {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string, department: string) => {
+    // Use the current origin for redirect URL
     const redirectUrl = `${window.location.origin}/auth/callback`;
+    
+    console.log('Signing up with redirect URL:', redirectUrl);
     
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -42,6 +46,8 @@ export const useAuth = () => {
         emailRedirectTo: redirectUrl,
       },
     });
+    
+    console.log('Sign up result:', { data, error });
     return { data, error };
   };
 
@@ -50,11 +56,27 @@ export const useAuth = () => {
       email,
       password,
     });
+    
+    console.log('Sign in result:', { data, error });
     return { data, error };
   };
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+    return { error };
+  };
+
+  const resendConfirmation = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: redirectUrl,
+      },
+    });
+    
     return { error };
   };
 
@@ -65,5 +87,6 @@ export const useAuth = () => {
     signUp,
     signIn,
     signOut,
+    resendConfirmation,
   };
 };

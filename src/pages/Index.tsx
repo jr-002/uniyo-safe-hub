@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Shield, Users, AlertTriangle, BookOpen, Sparkles, Zap, Globe, Lock } from "lucide-react";
+import { Shield, Users, AlertTriangle, BookOpen, Sparkles, Zap, Globe, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -16,10 +17,27 @@ const Index = () => {
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showVerificationPending, setShowVerificationPending] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signUp, signIn, user, loading } = useAuth();
+
+  // Password strength indicator
+  const getPasswordStrength = (password: string) => {
+    if (password.length === 0) return { strength: 0, text: "", color: "" };
+    if (password.length < 6) return { strength: 1, text: "Too short", color: "text-red-500" };
+    if (password.length < 8) return { strength: 2, text: "Weak", color: "text-orange-500" };
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) return { strength: 3, text: "Fair", color: "text-yellow-500" };
+    return { strength: 4, text: "Strong", color: "text-green-500" };
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+
+  // Email validation
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   // Redirect if already logged in
   if (!loading && user) {
@@ -35,7 +53,23 @@ const Index = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all fields to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsLoading(true);
     const { error } = await signIn(email, password);
@@ -58,7 +92,32 @@ const Index = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !name || !department) return;
+    if (!email || !password || !name || !department) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all fields to create your account.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (passwordStrength.strength < 3) {
+      toast({
+        title: "Weak Password",
+        description: "Please choose a stronger password with at least 8 characters, including uppercase, lowercase, and numbers.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsLoading(true);
     const { data, error } = await signUp(email, password, name, department);
@@ -72,7 +131,7 @@ const Index = () => {
     } else {
       toast({
         title: "Registration Successful!",
-        description: "Please check your email to verify your account.",
+        description: "Please check your email to verify your account before logging in.",
       });
       setShowVerificationPending(true);
     }
@@ -119,7 +178,7 @@ const Index = () => {
           <EnhancedCard 
             variant="interactive" 
             glowOnHover 
-            className="text-center border-l-4 border-l-uniuyo-red animate-slide-up"
+            className="text-center border-l-4 border-l-uniuyo-red animate-slide-up hover:scale-105 transition-transform duration-200"
             style={{ animationDelay: "0.1s" }}
           >
             <CardHeader>
@@ -139,7 +198,7 @@ const Index = () => {
           <EnhancedCard 
             variant="interactive" 
             glowOnHover 
-            className="text-center border-l-4 border-l-uniuyo-green animate-slide-up"
+            className="text-center border-l-4 border-l-uniuyo-green animate-slide-up hover:scale-105 transition-transform duration-200"
             style={{ animationDelay: "0.2s" }}
           >
             <CardHeader>
@@ -159,7 +218,7 @@ const Index = () => {
           <EnhancedCard 
             variant="interactive" 
             glowOnHover 
-            className="text-center border-l-4 border-l-uniuyo-gold animate-slide-up"
+            className="text-center border-l-4 border-l-uniuyo-gold animate-slide-up hover:scale-105 transition-transform duration-200"
             style={{ animationDelay: "0.3s" }}
           >
             <CardHeader>
@@ -179,7 +238,7 @@ const Index = () => {
           <EnhancedCard 
             variant="interactive" 
             glowOnHover 
-            className="text-center border-l-4 border-l-purple-500 animate-slide-up"
+            className="text-center border-l-4 border-l-purple-500 animate-slide-up hover:scale-105 transition-transform duration-200"
             style={{ animationDelay: "0.4s" }}
           >
             <CardHeader>
@@ -219,22 +278,42 @@ const Index = () => {
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-4">
-                      <Input
-                        type="email"
-                        placeholder="Student Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-red/20"
-                      />
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-red/20"
-                      />
+                      <div className="relative">
+                        <Input
+                          type="email"
+                          placeholder="Student Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-red/20"
+                        />
+                        {email && (
+                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            {isValidEmail(email) ? (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4 text-red-500" />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-red/20 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button 
                       type="submit" 
@@ -264,14 +343,25 @@ const Index = () => {
                         required
                         className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20"
                       />
-                      <Input
-                        type="email"
-                        placeholder="Student Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20"
-                      />
+                      <div className="relative">
+                        <Input
+                          type="email"
+                          placeholder="Student Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20"
+                        />
+                        {email && (
+                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            {isValidEmail(email) ? (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4 text-red-500" />
+                            )}
+                          </div>
+                        )}
+                      </div>
                       <Input
                         type="text"
                         placeholder="Department"
@@ -280,14 +370,44 @@ const Index = () => {
                         required
                         className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20"
                       />
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20"
-                      />
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="transition-all duration-200 focus:ring-2 focus:ring-uniuyo-green/20 pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
+                        {password && (
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className={passwordStrength.color}>
+                                Password strength: {passwordStrength.text}
+                              </span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                  passwordStrength.strength === 1 ? 'bg-red-500 w-1/4' :
+                                  passwordStrength.strength === 2 ? 'bg-orange-500 w-2/4' :
+                                  passwordStrength.strength === 3 ? 'bg-yellow-500 w-3/4' :
+                                  passwordStrength.strength === 4 ? 'bg-green-500 w-full' : 'w-0'
+                                }`}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <Button 
                       type="submit" 
