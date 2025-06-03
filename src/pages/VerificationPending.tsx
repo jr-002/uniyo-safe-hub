@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Mail, ArrowLeft, RefreshCw, CheckCircle, Clock } from "lucide-react";
+import { Shield, Mail, ArrowLeft, RefreshCw, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -75,7 +75,7 @@ const VerificationPending = () => {
             Check Your Email
           </CardTitle>
           <CardDescription className="text-base">
-            We've sent a verification link to your email address to complete your registration.
+            We've sent a verification link to your email address to complete your registration for UniUyo Guardian.
           </CardDescription>
         </CardHeader>
         
@@ -97,9 +97,25 @@ const VerificationPending = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-blue-200 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                <span>You'll be automatically logged in to UniUyo Guardian</span>
+                <span>You'll be automatically brought back to UniUyo Guardian</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="bg-blue-200 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                <span>Start using all safety features immediately</span>
               </li>
             </ol>
+          </div>
+
+          {/* Important note about staying on the site */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+              <ExternalLink className="h-5 w-5" />
+              Important Note:
+            </h3>
+            <p className="text-sm text-amber-700">
+              After clicking the verification link in your email, you'll be automatically redirected back to this site. 
+              If you're not redirected, simply return to this page and log in with your credentials.
+            </p>
           </div>
 
           {/* Resend email section */}
@@ -145,9 +161,16 @@ const VerificationPending = () => {
           {/* Help section */}
           <div className="bg-gray-50 rounded-lg p-4 text-center">
             <p className="text-sm text-gray-600 mb-2">Still having trouble?</p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 mb-3">
               Contact support at <strong>support@uniuyo.edu.ng</strong> or visit the IT helpdesk.
             </p>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => window.location.href = "mailto:support@uniuyo.edu.ng?subject=Email Verification Issue - UniUyo Guardian"}
+            >
+              Contact Support
+            </Button>
           </div>
 
           {/* Navigation */}

@@ -29,9 +29,14 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const getRedirectUrl = () => {
+    // Use the current origin for redirect URL, but ensure it works in both development and production
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/auth/callback`;
+  };
+
   const signUp = async (email: string, password: string, fullName: string, department: string) => {
-    // Use the current origin for redirect URL
-    const redirectUrl = `${window.location.origin}/auth/callback`;
+    const redirectUrl = getRedirectUrl();
     
     console.log('Signing up with redirect URL:', redirectUrl);
     
@@ -67,7 +72,9 @@ export const useAuth = () => {
   };
 
   const resendConfirmation = async (email: string) => {
-    const redirectUrl = `${window.location.origin}/auth/callback`;
+    const redirectUrl = getRedirectUrl();
+    
+    console.log('Resending confirmation with redirect URL:', redirectUrl);
     
     const { error } = await supabase.auth.resend({
       type: 'signup',
