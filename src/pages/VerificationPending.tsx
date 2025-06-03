@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Mail, ArrowLeft, RefreshCw, CheckCircle, Clock, ExternalLink } from "lucide-react";
+import { Shield, Mail, ArrowLeft, RefreshCw, CheckCircle, Clock, ExternalLink, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -38,8 +38,8 @@ const VerificationPending = () => {
       });
     } else {
       toast({
-        title: "Email Sent!",
-        description: "We've sent a new verification email to your inbox.",
+        title: "New Email Sent!",
+        description: "We've sent a fresh verification email to your inbox. The new link is valid for 24 hours.",
       });
       
       // Start cooldown
@@ -80,6 +80,18 @@ const VerificationPending = () => {
         </CardHeader>
         
         <CardContent className="space-y-6">
+          {/* Token expiration warning */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              Important: Link Expires in 24 Hours
+            </h3>
+            <p className="text-sm text-amber-700">
+              Your verification link is valid for 24 hours from when it was sent. 
+              If it expires, you can request a new one below.
+            </p>
+          </div>
+
           {/* Step-by-step instructions */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
             <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
@@ -93,7 +105,7 @@ const VerificationPending = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-blue-200 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
-                <span>Click the "Verify Email" button in the email</span>
+                <span>Click the "Verify Email" button within 24 hours</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-blue-200 text-blue-800 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
@@ -107,14 +119,14 @@ const VerificationPending = () => {
           </div>
 
           {/* Important note about staying on the site */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h3 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
               <ExternalLink className="h-5 w-5" />
-              Important Note:
+              What Happens Next:
             </h3>
-            <p className="text-sm text-amber-700">
-              After clicking the verification link in your email, you'll be automatically redirected back to this site. 
-              If you're not redirected, simply return to this page and log in with your credentials.
+            <p className="text-sm text-green-700">
+              After clicking the verification link, you'll be automatically redirected back to this site and logged in. 
+              If the redirect doesn't work, simply return to this page - you'll be able to log in normally.
             </p>
           </div>
 
@@ -122,7 +134,7 @@ const VerificationPending = () => {
           <div className="space-y-4">
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-4">
-                Didn't receive the email? Enter your email address to resend it.
+                Didn't receive the email or did your link expire? Enter your email address to get a fresh verification link.
               </p>
               <div className="space-y-3">
                 <Input
@@ -140,7 +152,7 @@ const VerificationPending = () => {
                   {isResending ? (
                     <div className="flex items-center gap-2">
                       <LoadingSpinner size="sm" />
-                      Sending...
+                      Sending New Link...
                     </div>
                   ) : resendCooldown > 0 ? (
                     <div className="flex items-center gap-2">
@@ -150,7 +162,7 @@ const VerificationPending = () => {
                   ) : (
                     <div className="flex items-center gap-2">
                       <RefreshCw className="h-4 w-4" />
-                      Resend Verification Email
+                      Send New Verification Link
                     </div>
                   )}
                 </Button>

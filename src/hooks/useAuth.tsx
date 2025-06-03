@@ -12,7 +12,11 @@ export const useAuth = () => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email_confirmed_at);
+        console.log('Auth state changed:', event, {
+          user: session?.user?.email,
+          confirmed: session?.user?.email_confirmed_at,
+          expires: session?.expires_at
+        });
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -21,6 +25,11 @@ export const useAuth = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', {
+        user: session?.user?.email,
+        confirmed: session?.user?.email_confirmed_at,
+        expires: session?.expires_at
+      });
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -52,7 +61,15 @@ export const useAuth = () => {
       },
     });
     
-    console.log('Sign up result:', { data, error });
+    console.log('Sign up result:', { 
+      data: {
+        user: data?.user?.email,
+        session: !!data?.session,
+        needsConfirmation: !data?.session && !!data?.user
+      }, 
+      error: error?.message 
+    });
+    
     return { data, error };
   };
 
@@ -62,19 +79,35 @@ export const useAuth = () => {
       password,
     });
     
-    console.log('Sign in result:', { data, error });
+    console.log('Sign in result:', { 
+      data: {
+        user: data?.user?.email,
+        session: !!data?.session,
+        confirmed: data?.user?.email_confirmed_at
+      }, 
+      error: error?.message 
+    });
+    
     return { data, error };
   };
 
   const signOut = async () => {
+    console.log('Signing out user:', user?.email);
     const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error('Sign out error:', error.message);
+    } else {
+      console.log('Successfully signed out');
+    }
+    
     return { error };
   };
 
   const resendConfirmation = async (email: string) => {
     const redirectUrl = getRedirectUrl();
     
-    console.log('Resending confirmation with redirect URL:', redirectUrl);
+    console.log('Resending confirmation with redirect URL:', redirectUrl, 'for email:', email);
     
     const { error } = await supabase.auth.resend({
       type: 'signup',
@@ -83,6 +116,12 @@ export const useAuth = () => {
         emailRedirectTo: redirectUrl,
       },
     });
+    
+    if (error) {
+      console.error('Resend confirmation error:', error.message);
+    } else {
+      console.log('Verification email resent successfully to:', email);
+    }
     
     return { error };
   };
