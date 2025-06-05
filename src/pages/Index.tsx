@@ -18,7 +18,6 @@ const Index = () => {
   const [department, setDepartment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showVerificationPending, setShowVerificationPending] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signUp, signIn, user, loading } = useAuth();
@@ -42,12 +41,6 @@ const Index = () => {
   // Redirect if already logged in
   if (!loading && user) {
     navigate("/dashboard");
-    return null;
-  }
-
-  // Show verification pending page if needed
-  if (showVerificationPending) {
-    navigate("/verification-pending");
     return null;
   }
 
@@ -129,11 +122,21 @@ const Index = () => {
         variant: "destructive",
       });
     } else {
-      toast({
-        title: "Registration Successful!",
-        description: "Please check your email to verify your account before logging in.",
-      });
-      setShowVerificationPending(true);
+      if (data.session) {
+        // User is automatically logged in (email confirmation disabled)
+        toast({
+          title: "Account Created!",
+          description: "Welcome to UniUyo Guardian! You're now logged in.",
+        });
+        navigate("/dashboard");
+      } else {
+        // Email confirmation required
+        toast({
+          title: "Registration Successful!",
+          description: "Please check your email to verify your account before logging in.",
+        });
+        navigate("/verification-pending");
+      }
     }
     setIsLoading(false);
   };

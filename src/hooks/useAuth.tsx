@@ -38,16 +38,8 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const getRedirectUrl = () => {
-    // Use the current origin for redirect URL, but ensure it works in both development and production
-    const baseUrl = window.location.origin;
-    return `${baseUrl}/auth/callback`;
-  };
-
   const signUp = async (email: string, password: string, fullName: string, department: string) => {
-    const redirectUrl = getRedirectUrl();
-    
-    console.log('Signing up with redirect URL:', redirectUrl);
+    console.log('Starting fresh signup for:', email);
     
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -57,7 +49,6 @@ export const useAuth = () => {
           full_name: fullName,
           department: department,
         },
-        emailRedirectTo: redirectUrl,
       },
     });
     
@@ -104,28 +95,6 @@ export const useAuth = () => {
     return { error };
   };
 
-  const resendConfirmation = async (email: string) => {
-    const redirectUrl = getRedirectUrl();
-    
-    console.log('Resending confirmation with redirect URL:', redirectUrl, 'for email:', email);
-    
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email,
-      options: {
-        emailRedirectTo: redirectUrl,
-      },
-    });
-    
-    if (error) {
-      console.error('Resend confirmation error:', error.message);
-    } else {
-      console.log('Verification email resent successfully to:', email);
-    }
-    
-    return { error };
-  };
-
   return {
     user,
     session,
@@ -133,6 +102,5 @@ export const useAuth = () => {
     signUp,
     signIn,
     signOut,
-    resendConfirmation,
   };
 };

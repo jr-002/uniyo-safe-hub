@@ -198,36 +198,6 @@ export type Database = {
         }
         Relationships: []
       }
-      profiles: {
-        Row: {
-          created_at: string
-          department: string | null
-          emergency_contact: string | null
-          full_name: string
-          id: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          department?: string | null
-          emergency_contact?: string | null
-          full_name: string
-          id?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          department?: string | null
-          emergency_contact?: string | null
-          full_name?: string
-          id?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       safety_alerts: {
         Row: {
           alert_type: string
