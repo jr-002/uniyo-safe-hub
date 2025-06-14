@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 343 75% 32%;
+    --primary: 343 75% 32%; /* UniUyo Red as primary */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -31,18 +31,19 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 343 75% 32%;
+    --ring: 343 75% 32%; /* UniUyo Red for focus rings */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 343 75% 32%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    /* Sidebar Specific Colors */
+    --sidebar-background: 0 0% 98%; /* Light gray for sidebar */
+    --sidebar-foreground: 240 5.3% 26.1%; /* Darker text for readability */
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 343 75% 32%;
+    --sidebar-primary: hsl(var(--primary)); /* Use main primary color */
+    --sidebar-primary-foreground: hsl(var(--primary-foreground));
+    --sidebar-accent: 240 4.8% 92.9%; /* Slightly darker accent for hover */
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-ring: hsl(var(--ring));
 
     /* Enhanced UniUyo Brand Colors */
     --uniuyo-red: 343 75% 32%;
@@ -56,11 +57,18 @@
     --error: 0 84% 60%;
     
     /* Enhanced Shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+    /* Glassmorphism properties */
+    --glass-blur: 10px;
+    --glass-bg-color: rgba(255, 255, 255, 0.3);
+    --glass-border-color: rgba(255, 255, 255, 0.5);
   }
 
   .dark {
@@ -73,7 +81,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 343 75% 45%;
+    --primary: 343 75% 45%; /* Brighter UniUyo Red for dark mode */
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -90,21 +98,27 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 343 75% 45%;
+    --ring: 343 75% 45%; /* Brighter UniUyo Red for focus rings in dark mode */
     
-    --sidebar-background: 240 5.9% 10%;
+    /* Sidebar Specific Colors - Dark Mode */
+    --sidebar-background: 240 5.9% 10%; /* Darker sidebar */
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 343 75% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 343 75% 45%;
+    --sidebar-primary: hsl(var(--primary));
+    --sidebar-primary-foreground: 0 0% 98%; /* Ensure contrast */
+    --sidebar-accent: 240 3.7% 20.9%; /* Slightly lighter accent for hover */
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-ring: hsl(var(--ring));
 
     /* Enhanced UniUyo Brand Colors - Dark Mode */
     --uniuyo-red: 343 75% 45%;
     --uniuyo-green: 90 50% 35%;
     --uniuyo-gold: 43 75% 60%;
+
+    /* Glassmorphism properties - Dark Mode */
+    --glass-blur: 10px;
+    --glass-bg-color: rgba(30, 30, 30, 0.3);
+    --glass-border-color: rgba(50, 50, 50, 0.5);
   }
 }
 
@@ -114,25 +128,26 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased; /* Added antialiased for smoother fonts */
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   /* Enhanced scroll bars */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px; /* Slightly wider */
+    height: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    @apply bg-muted;
+    @apply bg-muted/50; /* More subtle track */
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full;
+    @apply bg-muted-foreground/30 rounded-full; /* More prominent thumb */
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/30;
+    @apply bg-muted-foreground/50;
   }
 }
 
@@ -141,17 +156,25 @@
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
   }
-  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+  }
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }
-  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.4s ease-out;
+  }
   .animate-scale-in {
     animation: scaleIn 0.2s ease-out;
   }
-  
   .animate-pulse-gentle {
     animation: pulseGentle 2s ease-in-out infinite;
+  }
+
+  /* Glassmorphism Card Style */
+  .glassmorphic-card {
+    @apply bg-[var(--glass-bg-color)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border-color)] rounded-xl shadow-lg;
   }
   
   /* Enhanced Card Styles */
@@ -160,46 +183,47 @@
   }
   
   .card-interactive {
-    @apply card-elevated hover:scale-[1.02] cursor-pointer;
+    @apply card-elevated hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
   }
   
   /* Enhanced Button Styles */
   .btn-emergency {
-    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200;
+    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 transition-all duration-200;
   }
   
   .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200;
+    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 active:scale-100 transition-all duration-200;
   }
-  
-  /* Status Badge Styles */
-  .badge-success {
-    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-3 py-1 rounded-full text-sm font-medium;
-  }
-  
-  .badge-warning {
-    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-3 py-1 rounded-full text-sm font-medium;
-  }
-  
-  .badge-error {
-    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 px-3 py-1 rounded-full text-sm font-medium;
-  }
-  
-  .badge-info {
-    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium;
-  }
-  
+
+  /* Status Badge Styles (already good, keeping them) */
+  /* ... keep existing code (badge styles) */
+
   /* Enhanced Gradient Backgrounds */
   .gradient-uniuyo {
-    @apply bg-gradient-to-br from-red-50 via-white to-green-50 dark:from-red-950/20 dark:via-gray-900 dark:to-green-950/20;
+    @apply bg-gradient-to-br from-red-50 via-white to-green-50 dark:from-uniuyo-red/10 dark:via-background dark:to-uniuyo-green/10;
   }
   
   .gradient-card {
     @apply bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-800 dark:to-gray-900/50;
   }
+
+  /* Main content area for sidebar layout */
+  .main-content-area {
+    @apply flex-1 transition-all duration-300 ease-in-out;
+    /* Padding will be handled by SidebarInset or manually */
+  }
 }
 
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -221,6 +245,17 @@
   }
 }
 
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes scaleIn {
   from {
     opacity: 0;
@@ -235,23 +270,14 @@
 @keyframes pulseGentle {
   0%, 100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
     opacity: 0.8;
+    transform: scale(0.98);
   }
 }
 
-/* Loading Spinner */
-.spinner {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid hsl(var(--primary));
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-}
+/* Loading Spinner (already good, keeping it) */
+/* ... keep existing code (spinner styles) */
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}

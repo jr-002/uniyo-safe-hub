@@ -1,10 +1,11 @@
-
-import Navigation from "@/components/Navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Search, Shield, MapPin, Clock, Users } from "lucide-react";
+import { Phone, Search, Shield, MapPin, Clock, Users, Menu } from "lucide-react";
 import { useState } from "react";
 
 const Directory = () => {
@@ -142,160 +143,171 @@ const Directory = () => {
   };
 
   const getAvailabilityColor = (availability: string) => {
-    return availability === "24/7" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800";
+    return availability === "24/7" ? "bg-green-100 text-green-800 dark:bg-green-700/30 dark:text-green-300" : "bg-blue-100 text-blue-800 dark:bg-blue-700/30 dark:text-blue-300";
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      <div className="lg:ml-64 pb-20 lg:pb-8">
-        <div className="p-6">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Emergency Directory</h1>
-            <p className="text-gray-600">
-              Quick access to emergency contacts and essential services
-            </p>
-          </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        <SidebarInset className="flex-1 flex flex-col overflow-y-auto">
+          <header className="sticky top-0 z-10 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b md:hidden">
+            <SidebarTrigger className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </SidebarTrigger>
+            <h1 className="text-lg font-semibold">Emergency Directory</h1>
+          </header>
+          <main className="p-6 flex-grow">
+            <div className="mb-8 flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-1">Emergency Directory</h1>
+                <p className="text-muted-foreground">
+                  Quick access to emergency contacts and essential services
+                </p>
+              </div>
+              <SidebarTrigger className="hidden md:flex">
+                <Menu className="h-6 w-6" />
+              </SidebarTrigger>
+            </div>
 
-          {/* Search */}
-          <Card className="mb-6">
-            <CardContent className="p-6">
+            {/* Search */}
+            <EnhancedCard variant="elevated" className="mb-6 p-6">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   placeholder="Search emergency contacts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-base" // Increased text size
                 />
               </div>
-            </CardContent>
-          </Card>
+            </EnhancedCard>
 
-          {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-4 mb-8">
-            <Card className="bg-red-50 border-red-200">
-              <CardContent className="p-6 text-center">
-                <Phone className="h-12 w-12 text-red-500 mx-auto mb-3" />
-                <h3 className="font-semibold text-red-700 mb-2">UniUyo Security</h3>
-                <Button 
-                  className="w-full bg-red-600 hover:bg-red-700"
-                  onClick={() => makeCall("08012345678")}
-                >
-                  Call Now
-                </Button>
-              </CardContent>
-            </Card>
+            {/* Quick Actions */}
+            <div className="grid md:grid-cols-3 gap-6 mb-8"> {/* Increased gap */}
+              <EnhancedCard variant="interactive" glowOnHover className="bg-red-500/10 dark:bg-red-500/20 border-red-500/30">
+                <div className="p-6 text-center"> {/* CardContent equivalent */}
+                  <Phone className="h-12 w-12 text-red-500 mx-auto mb-3" />
+                  <h3 className="font-semibold text-red-700 dark:text-red-400 mb-2">UniUyo Security</h3>
+                  <Button 
+                    className="w-full bg-red-600 hover:bg-red-700"
+                    onClick={() => makeCall("08012345678")}
+                  >
+                    Call Now
+                  </Button>
+                </div>
+              </EnhancedCard>
 
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="p-6 text-center">
-                <Shield className="h-12 w-12 text-blue-500 mx-auto mb-3" />
-                <h3 className="font-semibold text-blue-700 mb-2">Police Emergency</h3>
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  onClick={() => makeCall("199")}
-                >
-                  Call 199
-                </Button>
-              </CardContent>
-            </Card>
+              <EnhancedCard variant="interactive" glowOnHover className="bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/30">
+                <div className="p-6 text-center">
+                  <Shield className="h-12 w-12 text-blue-500 mx-auto mb-3" />
+                  <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Police Emergency</h3>
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => makeCall("199")}
+                  >
+                    Call 199
+                  </Button>
+                </div>
+              </EnhancedCard>
 
-            <Card className="bg-green-50 border-green-200">
-              <CardContent className="p-6 text-center">
-                <Users className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <h3 className="font-semibold text-green-700 mb-2">Medical Emergency</h3>
-                <Button 
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  onClick={() => makeCall("08033123456")}
-                >
-                  Call Hospital
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              <EnhancedCard variant="interactive" glowOnHover className="bg-green-500/10 dark:bg-green-500/20 border-green-500/30">
+                <div className="p-6 text-center">
+                  <Users className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                  <h3 className="font-semibold text-green-700 dark:text-green-400 mb-2">Medical Emergency</h3>
+                  <Button 
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => makeCall("08033123456")}
+                  >
+                    Call Hospital
+                  </Button>
+                </div>
+              </EnhancedCard>
+            </div>
 
-          {/* Contact Categories */}
-          <div className="space-y-6">
-            {filteredContacts.map((category, categoryIndex) => (
-              <Card key={categoryIndex}>
-                <CardHeader>
-                  <CardTitle className="text-xl">{category.category}</CardTitle>
-                  <CardDescription>
-                    {category.contacts.length} contact{category.contacts.length !== 1 ? 's' : ''} available
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {category.contacts.map((contact, contactIndex) => (
-                      <Card key={contactIndex} className="bg-white border hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg mb-1">{contact.name}</h3>
-                              <p className="text-sm text-gray-600 mb-2">{contact.description}</p>
-                            </div>
-                            <Button
-                              size="sm"
-                              className="ml-4 bg-green-600 hover:bg-green-700"
-                              onClick={() => makeCall(contact.number)}
-                            >
-                              <Phone className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <div className="text-lg font-mono font-semibold text-blue-600">
-                              {contact.number}
+            {/* Contact Categories */}
+            <div className="space-y-8"> {/* Increased spacing */}
+              {filteredContacts.map((category, categoryIndex) => (
+                <EnhancedCard key={categoryIndex} variant="default" className="overflow-hidden">
+                  <CardHeader className="bg-muted/30 dark:bg-muted/10 p-4">
+                    <CardTitle className="text-xl text-foreground">{category.category}</CardTitle>
+                    <CardDescription>
+                      {category.contacts.length} contact{category.contacts.length !== 1 ? 's' : ''} available
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 md:p-6">
+                    <div className="grid md:grid-cols-2 gap-6"> {/* Increased gap */}
+                      {category.contacts.map((contact, contactIndex) => (
+                        <EnhancedCard key={contactIndex} variant="elevated" className="bg-card hover:shadow-primary/10">
+                          <CardContent className="p-4">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-lg mb-1 text-foreground">{contact.name}</h3>
+                                <p className="text-sm text-muted-foreground mb-2">{contact.description}</p>
+                              </div>
+                              <Button
+                                size="icon" // Made icon button slightly larger
+                                variant="outline"
+                                className="ml-4 border-primary text-primary hover:bg-primary/10 shrink-0"
+                                onClick={() => makeCall(contact.number)}
+                              >
+                                <Phone className="h-5 w-5" />
+                              </Button>
                             </div>
                             
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center text-sm text-gray-600">
-                                <MapPin className="h-4 w-4 mr-1" />
-                                {contact.location}
+                            <div className="space-y-2">
+                              <div className="text-lg font-mono font-semibold text-primary">
+                                {contact.number}
                               </div>
-                              <Badge className={getAvailabilityColor(contact.availability)}>
-                                <Clock className="h-3 w-3 mr-1" />
-                                {contact.availability}
-                              </Badge>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center text-sm text-muted-foreground">
+                                  <MapPin className="h-4 w-4 mr-1.5" />
+                                  {contact.location}
+                                </div>
+                                <Badge className={`${getAvailabilityColor(contact.availability)} px-3 py-1 text-xs`}>
+                                  <Clock className="h-3 w-3 mr-1.5" />
+                                  {contact.availability}
+                                </Badge>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                          </CardContent>
+                        </EnhancedCard>
+                      ))}
+                    </div>
+                  </CardContent>
+                </EnhancedCard>
+              ))}
+            </div>
+
+            {filteredContacts.length === 0 && (
+              <EnhancedCard variant="default" className="mt-8">
+                <CardContent className="p-12 text-center">
+                  <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No contacts found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search terms.</p>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
+              </EnhancedCard>
+            )}
 
-          {filteredContacts.length === 0 && (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No contacts found</h3>
-                <p className="text-gray-600">Try adjusting your search terms.</p>
+            {/* Important Notice */}
+            <EnhancedCard variant="default" className="mt-8 bg-yellow-500/10 dark:bg-yellow-500/20 border-yellow-500/30">
+              <CardHeader className="p-4">
+                <CardTitle className="text-yellow-800 dark:text-yellow-300">Important Notice</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="text-sm text-yellow-700 dark:text-yellow-200 space-y-2">
+                  <p>• Always call local emergency services (199) for life-threatening emergencies</p>
+                  <p>• For campus-specific issues, contact UniUyo Security first</p>
+                  <p>• Keep this directory accessible even when offline by bookmarking</p>
+                  <p>• Report any outdated contact information to help keep this directory current</p>
+                </div>
               </CardContent>
-            </Card>
-          )}
-
-          {/* Important Notice */}
-          <Card className="mt-8 bg-yellow-50 border-yellow-200">
-            <CardHeader>
-              <CardTitle className="text-yellow-800">Important Notice</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-yellow-700 space-y-2">
-                <p>• Always call local emergency services (199) for life-threatening emergencies</p>
-                <p>• For campus-specific issues, contact UniUyo Security first</p>
-                <p>• Keep this directory accessible even when offline by bookmarking</p>
-                <p>• Report any outdated contact information to help keep this directory current</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </EnhancedCard>
+          </main>
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
