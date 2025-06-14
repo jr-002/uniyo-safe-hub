@@ -8,10 +8,25 @@ import { Badge } from "@/components/ui/badge";
 import { Phone, Search, Shield, MapPin, Clock, Users, Filter, Star } from "lucide-react";
 import { useState } from "react";
 
+interface Contact {
+  name: string;
+  number: string;
+  description: string;
+  location: string;
+  availability: string;
+  featured?: boolean;
+}
+
+interface ContactCategory {
+  category: string;
+  priority?: "high";
+  contacts: Contact[];
+}
+
 const Directory = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const emergencyContacts = [
+  const emergencyContacts: ContactCategory[] = [
     {
       category: "University Security",
       priority: "high",
