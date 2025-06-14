@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import Navigation from "@/components/Navigation"; // Removing old navigation
@@ -21,30 +20,31 @@ import {
   Menu // For sidebar trigger
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client"; // supabase client no longer needed here for profiles
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  // const [profile, setProfile] = useState<any>(null); // No longer fetching profile separately
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/");
-      return;
+      // return; // No return needed here, navigation handles it
     }
 
-    if (user) {
-      const fetchProfile = async () => {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-        setProfile(data);
-      };
-      fetchProfile();
-    }
+    // User data is now directly available from 'user' object if needed for display name
+    // if (user) {
+    //   const fetchProfile = async () => {
+    //     const { data } = await supabase
+    //       .from('profiles') // This was causing the error
+    //       .select('*')
+    //       .eq('user_id', user.id)
+    //       .single();
+    //     setProfile(data);
+    //   };
+    //   fetchProfile();
+    // }
   }, [user, loading, navigate]);
 
   if (loading) {
@@ -59,7 +59,8 @@ const Dashboard = () => {
   }
 
   if (!user) {
-    return null;
+    // User will be redirected by the useEffect hook, or you can return a message/redirect here too
+    return null; // Or a specific "not logged in" component
   }
 
   const emergencyActions = [
@@ -127,6 +128,9 @@ const Dashboard = () => {
     }
   ];
 
+  // Get full_name from user_metadata, fallback to email
+  const displayName = user?.user_metadata?.full_name || user?.email;
+
   return (
     <SidebarProvider defaultOpen={true}> {/* defaultOpen can be true or based on cookie */}
       <div className="min-h-screen flex w-full bg-background">
@@ -144,7 +148,7 @@ const Dashboard = () => {
             <div className="mb-8 flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-foreground mb-1">
-                  Welcome back, {profile?.full_name || user.email}!
+                  Welcome back, {displayName}!
                 </h1>
                 <p className="text-muted-foreground">Stay safe and connected with your campus community.</p>
               </div>

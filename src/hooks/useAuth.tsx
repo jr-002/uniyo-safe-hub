@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useAuth = () => {
@@ -95,6 +95,21 @@ export const useAuth = () => {
     return { error };
   };
 
+  const resendConfirmation = async (email: string) => {
+    console.log('Resending confirmation email to:', email);
+    const { data, error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email,
+    });
+
+    if (error) {
+      console.error('Resend confirmation error:', error.message);
+    } else {
+      console.log('Resend confirmation email initiated:', data);
+    }
+    return { data, error };
+  };
+
   return {
     user,
     session,
@@ -102,5 +117,6 @@ export const useAuth = () => {
     signUp,
     signIn,
     signOut,
+    resendConfirmation, // Added resendConfirmation
   };
 };
