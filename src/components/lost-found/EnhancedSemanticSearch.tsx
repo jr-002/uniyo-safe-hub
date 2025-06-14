@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -49,7 +48,7 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
         <CardTitle className="flex items-center space-x-2">
           <Brain className="h-5 w-5 text-primary" />
           <span>Enhanced AI Search</span>
-          <Zap className="h-4 w-4 text-yellow-500" />
+          <Zap className="h-4 w-4 text-uniuyo-gold" />
           <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">Groq Semantic</Badge>
         </CardTitle>
         <CardDescription>
@@ -59,8 +58,12 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
       <CardContent className="space-y-4">
         <div className="flex space-x-2">
           <div className="relative flex-1">
+            <label htmlFor="enhanced-semantic-search-input" className="sr-only">
+              Enhanced AI Search Input
+            </label>
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
+              id="enhanced-semantic-search-input"
               placeholder="Describe what you're looking for in detail..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -71,6 +74,7 @@ export const EnhancedSemanticSearch = ({ items, onSearchResults, searchType = 'b
           <Button 
             onClick={handleSearch} 
             disabled={!searchQuery.trim() || isSearching}
+            aria-label="Perform enhanced AI search"
           >
             {isSearching ? (
               <Loader2 className="h-4 w-4 animate-spin" />

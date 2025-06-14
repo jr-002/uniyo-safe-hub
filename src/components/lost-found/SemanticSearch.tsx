@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -50,7 +49,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
         <CardTitle className="flex items-center space-x-2">
           <Brain className="h-5 w-5 text-primary" />
           <span>AI-Powered Search</span>
-          <Sparkles className="h-4 w-4 text-yellow-500" />
+          <Sparkles className="h-4 w-4 text-uniuyo-gold" />
         </CardTitle>
         <CardDescription>
           Describe what you're looking for in natural language. Our AI understands context, synonyms, and can match similar items.
@@ -59,8 +58,12 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
       <CardContent className="space-y-4">
         <div className="flex space-x-2">
           <div className="relative flex-1">
+            <label htmlFor="semantic-search-input" className="sr-only">
+              AI Search Input
+            </label>
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
+              id="semantic-search-input"
               placeholder="Describe what you're looking for..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -71,6 +74,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
           <Button 
             onClick={handleSearch} 
             disabled={!searchQuery.trim() || isSearching}
+            aria-label="Perform AI search"
           >
             {isSearching ? (
               <Loader2 className="h-4 w-4 animate-spin" />
