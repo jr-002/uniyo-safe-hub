@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+
+import { PageContainer } from "@/components/layout/PageContainer";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Search, Shield, MapPin, Clock, Users, Menu } from "lucide-react";
+import { Phone, Search, Shield, MapPin, Clock, Users, Filter, Star } from "lucide-react";
 import { useState } from "react";
 
 const Directory = () => {
@@ -14,13 +14,15 @@ const Directory = () => {
   const emergencyContacts = [
     {
       category: "University Security",
+      priority: "high",
       contacts: [
         {
           name: "UniUyo Security Control Room",
           number: "08012345678",
           description: "24/7 campus security emergency line",
           location: "Main Campus",
-          availability: "24/7"
+          availability: "24/7",
+          featured: true
         },
         {
           name: "Town Campus Security",
@@ -143,171 +145,230 @@ const Directory = () => {
   };
 
   const getAvailabilityColor = (availability: string) => {
-    return availability === "24/7" ? "bg-green-100 text-green-800 dark:bg-green-700/30 dark:text-green-300" : "bg-blue-100 text-blue-800 dark:bg-blue-700/30 dark:text-blue-300";
+    return availability === "24/7" 
+      ? "bg-green-100 text-green-800 dark:bg-green-700/30 dark:text-green-300" 
+      : "bg-blue-100 text-blue-800 dark:bg-blue-700/30 dark:text-blue-300";
   };
 
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <Button variant="outline" size="sm" className="gap-2">
+        <Filter className="h-4 w-4" />
+        Filter
+      </Button>
+      <Button onClick={() => makeCall("199")} className="gap-2 bg-red-600 hover:bg-red-700">
+        <Phone className="h-4 w-4" />
+        Emergency
+      </Button>
+    </div>
+  );
+
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar />
-        <SidebarInset className="flex-1 flex flex-col overflow-y-auto">
-          <header className="sticky top-0 z-10 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b md:hidden">
-            <SidebarTrigger className="md:hidden">
-              <Menu className="h-6 w-6" />
-            </SidebarTrigger>
-            <h1 className="text-lg font-semibold">Emergency Directory</h1>
-          </header>
-          <main className="p-6 flex-grow">
-            <div className="mb-8 flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-1">Emergency Directory</h1>
-                <p className="text-muted-foreground">
-                  Quick access to emergency contacts and essential services
-                </p>
-              </div>
-              <SidebarTrigger className="hidden md:flex">
-                <Menu className="h-6 w-6" />
-              </SidebarTrigger>
+    <PageContainer
+      title="Emergency Directory"
+      description="Quick access to emergency contacts and essential services. Save these numbers to your phone for offline access."
+      headerActions={headerActions}
+      className="px-6 pb-8 space-y-8"
+    >
+      {/* Search Section */}
+      <section>
+        <EnhancedCard variant="elevated" className="p-6 shadow-lg">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Search className="h-5 w-5 text-muted-foreground" />
+              <h3 className="font-semibold text-foreground">Find Emergency Contacts</h3>
             </div>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+              <Input
+                placeholder="Search by name, service, or location..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 text-base h-12 border-border/50 focus:border-primary"
+              />
+            </div>
+          </div>
+        </EnhancedCard>
+      </section>
 
-            {/* Search */}
-            <EnhancedCard variant="elevated" className="mb-6 p-6">
+      {/* Quick Emergency Actions */}
+      <section>
+        <h2 className="text-xl font-semibold font-display mb-6 text-foreground tracking-tight">
+          Quick Emergency Actions
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <EnhancedCard variant="interactive" glowOnHover className="bg-red-500/10 dark:bg-red-500/20 border-red-500/30 hover:border-red-500/50 transition-all">
+            <div className="p-6 text-center space-y-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  placeholder="Search emergency contacts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-base" // Increased text size
-                />
+                <Phone className="h-12 w-12 text-red-500 mx-auto" />
+                <Star className="h-4 w-4 text-yellow-500 absolute -top-1 -right-1 fill-current" />
               </div>
-            </EnhancedCard>
-
-            {/* Quick Actions */}
-            <div className="grid md:grid-cols-3 gap-6 mb-8"> {/* Increased gap */}
-              <EnhancedCard variant="interactive" glowOnHover className="bg-red-500/10 dark:bg-red-500/20 border-red-500/30">
-                <div className="p-6 text-center"> {/* CardContent equivalent */}
-                  <Phone className="h-12 w-12 text-red-500 mx-auto mb-3" />
-                  <h3 className="font-semibold text-red-700 dark:text-red-400 mb-2">UniUyo Security</h3>
-                  <Button 
-                    className="w-full bg-red-600 hover:bg-red-700"
-                    onClick={() => makeCall("08012345678")}
-                  >
-                    Call Now
-                  </Button>
-                </div>
-              </EnhancedCard>
-
-              <EnhancedCard variant="interactive" glowOnHover className="bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/30">
-                <div className="p-6 text-center">
-                  <Shield className="h-12 w-12 text-blue-500 mx-auto mb-3" />
-                  <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Police Emergency</h3>
-                  <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                    onClick={() => makeCall("199")}
-                  >
-                    Call 199
-                  </Button>
-                </div>
-              </EnhancedCard>
-
-              <EnhancedCard variant="interactive" glowOnHover className="bg-green-500/10 dark:bg-green-500/20 border-green-500/30">
-                <div className="p-6 text-center">
-                  <Users className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                  <h3 className="font-semibold text-green-700 dark:text-green-400 mb-2">Medical Emergency</h3>
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700"
-                    onClick={() => makeCall("08033123456")}
-                  >
-                    Call Hospital
-                  </Button>
-                </div>
-              </EnhancedCard>
+              <div className="space-y-2">
+                <h3 className="font-semibold text-red-700 dark:text-red-400">UniUyo Security</h3>
+                <p className="text-sm text-red-600 dark:text-red-300">Primary campus security</p>
+              </div>
+              <Button 
+                className="w-full bg-red-600 hover:bg-red-700 shadow-lg"
+                onClick={() => makeCall("08012345678")}
+              >
+                Call Now
+              </Button>
             </div>
+          </EnhancedCard>
 
-            {/* Contact Categories */}
-            <div className="space-y-8"> {/* Increased spacing */}
-              {filteredContacts.map((category, categoryIndex) => (
-                <EnhancedCard key={categoryIndex} variant="default" className="overflow-hidden">
-                  <CardHeader className="bg-muted/30 dark:bg-muted/10 p-4">
-                    <CardTitle className="text-xl text-foreground">{category.category}</CardTitle>
-                    <CardDescription>
-                      {category.contacts.length} contact{category.contacts.length !== 1 ? 's' : ''} available
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <div className="grid md:grid-cols-2 gap-6"> {/* Increased gap */}
-                      {category.contacts.map((contact, contactIndex) => (
-                        <EnhancedCard key={contactIndex} variant="elevated" className="bg-card hover:shadow-primary/10">
-                          <CardContent className="p-4">
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex-1">
-                                <h3 className="font-semibold text-lg mb-1 text-foreground">{contact.name}</h3>
-                                <p className="text-sm text-muted-foreground mb-2">{contact.description}</p>
-                              </div>
-                              <Button
-                                size="icon" // Made icon button slightly larger
-                                variant="outline"
-                                className="ml-4 border-primary text-primary hover:bg-primary/10 shrink-0"
-                                onClick={() => makeCall(contact.number)}
-                              >
-                                <Phone className="h-5 w-5" />
-                              </Button>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <div className="text-lg font-mono font-semibold text-primary">
-                                {contact.number}
+          <EnhancedCard variant="interactive" glowOnHover className="bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/30 hover:border-blue-500/50 transition-all">
+            <div className="p-6 text-center space-y-4">
+              <Shield className="h-12 w-12 text-blue-500 mx-auto" />
+              <div className="space-y-2">
+                <h3 className="font-semibold text-blue-700 dark:text-blue-400">Police Emergency</h3>
+                <p className="text-sm text-blue-600 dark:text-blue-300">National emergency line</p>
+              </div>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg"
+                onClick={() => makeCall("199")}
+              >
+                Call 199
+              </Button>
+            </div>
+          </EnhancedCard>
+
+          <EnhancedCard variant="interactive" glowOnHover className="bg-green-500/10 dark:bg-green-500/20 border-green-500/30 hover:border-green-500/50 transition-all">
+            <div className="p-6 text-center space-y-4">
+              <Users className="h-12 w-12 text-green-500 mx-auto" />
+              <div className="space-y-2">
+                <h3 className="font-semibold text-green-700 dark:text-green-400">Medical Emergency</h3>
+                <p className="text-sm text-green-600 dark:text-green-300">University hospital</p>
+              </div>
+              <Button 
+                className="w-full bg-green-600 hover:bg-green-700 shadow-lg"
+                onClick={() => makeCall("08033123456")}
+              >
+                Call Hospital
+              </Button>
+            </div>
+          </EnhancedCard>
+        </div>
+      </section>
+
+      {/* Contact Categories */}
+      <section>
+        <h2 className="text-xl font-semibold font-display mb-6 text-foreground tracking-tight">
+          All Emergency Contacts
+        </h2>
+        
+        {filteredContacts.length === 0 ? (
+          <EnhancedCard variant="default" className="shadow-lg">
+            <CardContent className="p-12 text-center">
+              <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No contacts found</h3>
+              <p className="text-muted-foreground">Try adjusting your search terms or clear the search to see all contacts.</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => setSearchTerm("")}
+              >
+                Clear Search
+              </Button>
+            </CardContent>
+          </EnhancedCard>
+        ) : (
+          <div className="space-y-8">
+            {filteredContacts.map((category, categoryIndex) => (
+              <EnhancedCard key={categoryIndex} variant="default" className="overflow-hidden shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-muted/30 to-muted/10 border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-xl text-foreground font-display">{category.category}</CardTitle>
+                      <CardDescription className="mt-1">
+                        {category.contacts.length} contact{category.contacts.length !== 1 ? 's' : ''} available
+                      </CardDescription>
+                    </div>
+                    {category.priority === "high" && (
+                      <Badge variant="destructive" className="shrink-0">High Priority</Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid gap-6">
+                    {category.contacts.map((contact, contactIndex) => (
+                      <EnhancedCard 
+                        key={contactIndex} 
+                        variant="elevated" 
+                        className="bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 space-y-3">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="font-semibold text-lg text-foreground">{contact.name}</h3>
+                                    {contact.featured && (
+                                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">{contact.description}</p>
+                                </div>
+                                <Button
+                                  size="default"
+                                  variant="outline"
+                                  className="border-primary text-primary hover:bg-primary/10 shrink-0 shadow-sm"
+                                  onClick={() => makeCall(contact.number)}
+                                >
+                                  <Phone className="h-4 w-4 mr-2" />
+                                  Call
+                                </Button>
                               </div>
                               
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center text-sm text-muted-foreground">
-                                  <MapPin className="h-4 w-4 mr-1.5" />
-                                  {contact.location}
+                              <div className="space-y-3">
+                                <div className="text-lg font-mono font-semibold text-primary bg-primary/5 px-3 py-2 rounded-lg">
+                                  {contact.number}
                                 </div>
-                                <Badge className={`${getAvailabilityColor(contact.availability)} px-3 py-1 text-xs`}>
-                                  <Clock className="h-3 w-3 mr-1.5" />
-                                  {contact.availability}
-                                </Badge>
+                                
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center text-sm text-muted-foreground">
+                                    <MapPin className="h-4 w-4 mr-2" />
+                                    {contact.location}
+                                  </div>
+                                  <Badge className={`${getAvailabilityColor(contact.availability)} px-3 py-1 text-xs font-medium`}>
+                                    <Clock className="h-3 w-3 mr-1.5" />
+                                    {contact.availability}
+                                  </Badge>
+                                </div>
                               </div>
                             </div>
-                          </CardContent>
-                        </EnhancedCard>
-                      ))}
-                    </div>
-                  </CardContent>
-                </EnhancedCard>
-              ))}
-            </div>
-
-            {filteredContacts.length === 0 && (
-              <EnhancedCard variant="default" className="mt-8">
-                <CardContent className="p-12 text-center">
-                  <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No contacts found</h3>
-                  <p className="text-muted-foreground">Try adjusting your search terms.</p>
+                          </div>
+                        </CardContent>
+                      </EnhancedCard>
+                    ))}
+                  </div>
                 </CardContent>
               </EnhancedCard>
-            )}
+            ))}
+          </div>
+        )}
+      </section>
 
-            {/* Important Notice */}
-            <EnhancedCard variant="default" className="mt-8 bg-yellow-500/10 dark:bg-yellow-500/20 border-yellow-500/30">
-              <CardHeader className="p-4">
-                <CardTitle className="text-yellow-800 dark:text-yellow-300">Important Notice</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="text-sm text-yellow-700 dark:text-yellow-200 space-y-2">
-                  <p>• Always call local emergency services (199) for life-threatening emergencies</p>
-                  <p>• For campus-specific issues, contact UniUyo Security first</p>
-                  <p>• Keep this directory accessible even when offline by bookmarking</p>
-                  <p>• Report any outdated contact information to help keep this directory current</p>
-                </div>
-              </CardContent>
-            </EnhancedCard>
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+      {/* Important Notice */}
+      <section>
+        <EnhancedCard variant="default" className="bg-yellow-500/10 dark:bg-yellow-500/20 border-yellow-500/30 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-yellow-800 dark:text-yellow-300 flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Important Safety Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm text-yellow-700 dark:text-yellow-200 space-y-3 leading-relaxed">
+              <p>• <strong>Life-threatening emergencies:</strong> Always call 199 (Police) or go to the nearest hospital</p>
+              <p>• <strong>Campus incidents:</strong> Contact UniUyo Security first for faster response</p>
+              <p>• <strong>Offline access:</strong> Save important numbers to your phone contacts</p>
+              <p>• <strong>Updates:</strong> Report outdated information to help keep this directory current</p>
+            </div>
+          </CardContent>
+        </EnhancedCard>
+      </section>
+    </PageContainer>
   );
 };
 

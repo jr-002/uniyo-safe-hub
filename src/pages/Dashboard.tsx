@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import Navigation from "@/components/Navigation"; // Removing old navigation
-import { AppSidebar } from "@/components/AppSidebar"; // Import new sidebar
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"; // Import sidebar layout tools
+import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card"; // Card parts
-import { EnhancedCard } from "@/components/ui/enhanced-card"; // Using EnhancedCard
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { Badge } from "@/components/ui/badge";
 import { 
   AlertTriangle, 
@@ -13,69 +12,54 @@ import {
   Bell, 
   Phone, 
   Search,
-  Newspaper, // Used File in sidebar, Newspaper for quick action is fine
+  Newspaper,
   MapPin,
   Clock,
   Users,
-  Menu // For sidebar trigger
+  Plus,
+  TrendingUp
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-// import { supabase } from "@/integrations/supabase/client"; // supabase client no longer needed here for profiles
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  // const [profile, setProfile] = useState<any>(null); // No longer fetching profile separately
 
   useEffect(() => {
     if (!loading && !user) {
       navigate("/");
-      // return; // No return needed here, navigation handles it
     }
-
-    // User data is now directly available from 'user' object if needed for display name
-    // if (user) {
-    //   const fetchProfile = async () => {
-    //     const { data } = await supabase
-    //       .from('profiles') // This was causing the error
-    //       .select('*')
-    //       .eq('user_id', user.id)
-    //       .single();
-    //     setProfile(data);
-    //   };
-    //   fetchProfile();
-    // }
   }, [user, loading, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Shield className="h-16 w-16 text-primary mx-auto mb-4 animate-pulse-gentle" />
-          <p className="text-lg text-muted-foreground">Loading Dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Shield className="h-16 w-16 text-primary mx-auto animate-pulse-gentle" />
+          <div className="space-y-2">
+            <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse" />
+            <div className="h-3 bg-muted/70 rounded w-24 mx-auto animate-pulse" />
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!user) {
-    // User will be redirected by the useEffect hook, or you can return a message/redirect here too
-    return null; // Or a specific "not logged in" component
-  }
+  if (!user) return null;
 
   const emergencyActions = [
     {
       icon: AlertTriangle,
       title: "Emergency SOS",
-      description: "Send immediate alert",
-      color: "bg-red-500 hover:bg-red-600",
+      description: "Send immediate alert to security",
+      color: "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700",
       path: "/emergency"
     },
     {
       icon: Phone,
       title: "Emergency Contacts",
-      description: "Call for help",
-      color: "bg-orange-500 hover:bg-orange-600",
+      description: "Quick access to help numbers",
+      color: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700",
       path: "/directory"
     }
   ];
@@ -84,188 +68,225 @@ const Dashboard = () => {
     {
       icon: Shield,
       title: "Report Incident",
-      description: "Anonymous reporting",
-      path: "/reports"
+      description: "Anonymous reporting system",
+      path: "/reports",
+      badge: "New"
     },
     {
       icon: Bell,
       title: "Safety Alerts",
-      description: "View local alerts",
-      path: "/alerts"
+      description: "Latest security updates",
+      path: "/alerts",
+      badge: "3"
     },
     {
       icon: Search,
       title: "Lost & Found",
-      description: "Find lost items",
+      description: "Find or report lost items",
       path: "/lost-found"
     },
     {
       icon: Newspaper,
       title: "University Updates",
-      description: "Latest news",
+      description: "Latest campus news",
       path: "/updates"
     }
   ];
 
   const recentAlerts = [
     {
-      type: "warning",
-      title: "Suspicious Activity",
+      type: "warning" as const,
+      title: "Suspicious Activity Reported",
       location: "Near Main Gate",
-      time: "2 hours ago"
+      time: "2 hours ago",
+      priority: "High"
     },
     {
-      type: "info",
-      title: "Power Outage",
+      type: "info" as const,
+      title: "Maintenance Notice",
       location: "Faculty of Science",
-      time: "4 hours ago"
+      time: "4 hours ago",
+      priority: "Medium"
     },
     {
-      type: "success",
-      title: "Lost ID Found",
-      location: "Library",
-      time: "6 hours ago"
+      type: "success" as const,
+      title: "Lost Student ID Recovered",
+      location: "University Library",
+      time: "6 hours ago",
+      priority: "Low"
     }
   ];
 
-  // Get full_name from user_metadata, fallback to email
-  const displayName = user?.user_metadata?.full_name || user?.email;
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Student";
+
+  const headerActions = (
+    <Button onClick={() => navigate("/reports")} className="gap-2">
+      <Plus className="h-4 w-4" />
+      Report Incident
+    </Button>
+  );
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-uniuyo-red/10 via-background to-uniuyo-green/10">
-        <AppSidebar />
-        <SidebarInset className="flex-1 flex flex-col overflow-y-auto main-content-area">
-          <header className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border md:hidden">
-            <SidebarTrigger className="md:hidden"> 
-              <Menu className="h-6 w-6" />
-            </SidebarTrigger>
-            <h1 className="text-lg font-semibold font-display">Dashboard</h1>
-          </header>
-          <main className="px-6 py-7 flex-grow space-y-10">
-            <div className="mb-6 flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-display font-bold text-primary mb-0.5">
-                  Welcome back, {displayName}!
-                </h1>
-                <p className="text-muted-foreground text-base max-w-[36rem]">Stay safe and connected with your campus community.</p>
-              </div>
-              <SidebarTrigger className="hidden md:flex"> {/* Desktop sidebar trigger */}
-                <Menu className="h-6 w-6" />
-              </SidebarTrigger>
-            </div>
+    <PageContainer
+      title={`Welcome back, ${displayName}!`}
+      description="Stay safe and connected with your campus community. Quick access to emergency services and safety tools."
+      headerActions={headerActions}
+      className="px-6 pb-8 space-y-8"
+    >
+      {/* Emergency Actions */}
+      <section>
+        <div className="flex items-center gap-2 mb-6">
+          <AlertTriangle className="h-5 w-5 text-destructive" />
+          <h2 className="text-xl font-semibold font-display text-destructive tracking-tight">
+            Emergency Actions
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {emergencyActions.map(({ icon: Icon, title, description, color, path }) => (
+            <EnhancedCard 
+              key={title} 
+              variant="interactive"
+              glowOnHover 
+              className="p-0 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              onClick={() => navigate(path)}
+            >
+              <Button
+                className={`w-full h-28 ${color} text-white text-lg font-semibold rounded-none flex items-center justify-start p-6 shadow-none hover:shadow-lg transition-all`}
+              >
+                <Icon className="h-12 w-12 mr-4 shrink-0 drop-shadow-md" />
+                <div className="text-left">
+                  <div className="text-xl font-display leading-tight mb-1">{title}</div>
+                  <div className="text-sm font-normal opacity-90 leading-relaxed">{description}</div>
+                </div>
+              </Button>
+            </EnhancedCard>
+          ))}
+        </div>
+      </section>
 
-            {/* Emergency Actions */}
-            <section>
-              <h2 className="text-xl font-semibold font-display mb-4 text-destructive tracking-tight">Emergency Actions</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {emergencyActions.map(({ icon: Icon, title, description, color, path }) => (
-                  <EnhancedCard 
-                    key={title} 
-                    variant="interactive"
-                    glowOnHover 
-                    className="p-0 overflow-hidden shadow-lg"
-                    onClick={() => navigate(path)}
-                  >
-                    <Button
-                      className={`w-full h-24 ${color} text-white text-lg font-semibold rounded-none flex items-center justify-start p-6 shadow-none`}
+      {/* Quick Actions */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold font-display text-foreground tracking-tight">
+            Quick Actions
+          </h2>
+          <Button variant="ghost" size="sm" className="text-muted-foreground">
+            View All
+          </Button>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {quickActions.map(({ icon: Icon, title, description, path, badge }) => (
+            <EnhancedCard 
+              key={title} 
+              variant="elevated"
+              glowOnHover
+              className="text-center cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary/10"
+              onClick={() => navigate(path)}
+            >
+              <div className="p-6 space-y-4">
+                <div className="relative">
+                  <Icon className="h-12 w-12 mx-auto text-primary drop-shadow-sm" />
+                  {badge && (
+                    <Badge 
+                      variant="secondary" 
+                      className="absolute -top-2 -right-2 bg-primary/10 text-primary border-primary/20"
                     >
-                      <Icon className="h-10 w-10 mr-4 shrink-0 drop-shadow" />
-                      <div className="text-left">
-                        <div className="text-xl font-display leading-tight">{title}</div>
-                        <div className="text-sm font-normal opacity-90">{description}</div>
-                      </div>
-                    </Button>
-                  </EnhancedCard>
-                ))}
+                      {badge}
+                    </Badge>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <CardTitle className="text-lg font-display leading-tight">{title}</CardTitle>
+                  <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
+                </div>
               </div>
-            </section>
+            </EnhancedCard>
+          ))}
+        </div>
+      </section>
 
-            {/* Quick Actions */}
-            <section>
-              <h2 className="text-xl font-semibold font-display mb-4 text-foreground tracking-tight">Quick Actions</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {quickActions.map(({ icon: Icon, title, description, path }) => (
-                  <EnhancedCard 
-                    key={title} 
-                    variant="elevated"
-                    glowOnHover
-                    className="text-center cursor-pointer transition-all hover:shadow-primary/20 shadow"
-                    onClick={() => navigate(path)}
+      {/* Dashboard Content Grid */}
+      <section className="grid lg:grid-cols-2 gap-8">
+        {/* Recent Activity */}
+        <EnhancedCard variant="default" className="shadow-lg">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="flex items-center text-foreground font-display text-lg">
+              <Bell className="h-5 w-5 mr-3 text-primary" />
+              Recent Alerts
+              <Badge variant="secondary" className="ml-auto">Live</Badge>
+            </CardTitle>
+          </CardHeader>
+          <div className="p-6">
+            <div className="space-y-4">
+              {recentAlerts.map((alert, index) => (
+                <div key={index} className="flex items-start space-x-4 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                  <Badge 
+                    variant={alert.type === "warning" ? "destructive" : alert.type === "info" ? "secondary" : "default"}
+                    className="capitalize shrink-0 mt-0.5"
                   >
-                    <Icon className="h-12 w-12 mx-auto text-primary mb-3 mt-2 drop-shadow" />
-                    <CardHeader className="p-4 pt-0 pb-2">
-                      <CardTitle className="text-lg font-display">{title}</CardTitle>
-                      <CardDescription className="text-xs">{description}</CardDescription>
-                    </CardHeader>
-                  </EnhancedCard>
-                ))}
-              </div>
-            </section>
-
-            {/* Recent Activity and Community Stats */}
-            <section className="grid lg:grid-cols-2 gap-6">
-              <EnhancedCard variant="default" className="shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-foreground font-display text-lg">
-                    <Bell className="h-5 w-5 mr-2 text-primary" />
-                    Recent Alerts
-                  </CardTitle>
-                </CardHeader>
-                <div className="p-6 pt-0">
-                  <div className="space-y-4">
-                    {recentAlerts.map((alert, index) => (
-                      <div key={index} className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
-                        <Badge 
-                          variant={alert.type === "warning" ? "destructive" : alert.type === "info" ? "secondary" : "default"}
-                          className="capitalize"
-                        >
-                          {alert.type}
-                        </Badge>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground">{alert.title}</h4>
-                          <div className="flex items-center text-sm text-muted-foreground mt-1">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {alert.location}
-                            <Clock className="h-4 w-4 ml-4 mr-1" />
-                            {alert.time}
-                          </div>
-                        </div>
+                    {alert.priority}
+                  </Badge>
+                  <div className="flex-1 space-y-2">
+                    <h4 className="font-medium text-foreground leading-tight">{alert.title}</h4>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {alert.location}
                       </div>
-                    ))}
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {alert.time}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </EnhancedCard>
+              ))}
+            </div>
+            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/alerts")}>
+              View All Alerts
+            </Button>
+          </div>
+        </EnhancedCard>
 
-              <EnhancedCard variant="default" className="shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-foreground font-display text-lg">
-                    <Users className="h-5 w-5 mr-2 text-primary" />
-                    Community Stats
-                  </CardTitle>
-                </CardHeader>
-                <div className="p-6 pt-0">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
-                      <span className="font-medium text-foreground">Active Users Today</span>
-                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-display">1,247</span>
-                    </div>
-                    <div className="flex justify-between items-center p-4 bg-green-500/10 dark:bg-green-500/20 rounded-lg">
-                      <span className="font-medium text-foreground">Items Recovered</span>
-                      <span className="text-2xl font-bold text-green-600 dark:text-green-400 font-display">23</span>
-                    </div>
-                    <div className="flex justify-between items-center p-4 bg-orange-500/10 dark:bg-orange-500/20 rounded-lg">
-                      <span className="font-medium text-foreground">Safety Reports</span>
-                      <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 font-display">8</span>
-                    </div>
-                  </div>
+        {/* Community Stats */}
+        <EnhancedCard variant="default" className="shadow-lg">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="flex items-center text-foreground font-display text-lg">
+              <Users className="h-5 w-5 mr-3 text-primary" />
+              Community Stats
+              <TrendingUp className="h-4 w-4 ml-auto text-green-500" />
+            </CardTitle>
+          </CardHeader>
+          <div className="p-6">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-500/10 to-blue-600/10 rounded-lg border border-blue-500/20">
+                <div className="space-y-1">
+                  <span className="font-medium text-foreground">Active Users Today</span>
+                  <div className="text-xs text-muted-foreground">+12% from yesterday</div>
                 </div>
-              </EnhancedCard>
-            </section>
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-display">1,247</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-lg border border-green-500/20">
+                <div className="space-y-1">
+                  <span className="font-medium text-foreground">Items Recovered</span>
+                  <div className="text-xs text-muted-foreground">This week</div>
+                </div>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-400 font-display">23</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-orange-500/10 to-orange-600/10 rounded-lg border border-orange-500/20">
+                <div className="space-y-1">
+                  <span className="font-medium text-foreground">Safety Reports</span>
+                  <div className="text-xs text-muted-foreground">Pending review</div>
+                </div>
+                <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 font-display">8</span>
+              </div>
+            </div>
+          </div>
+        </EnhancedCard>
+      </section>
+    </PageContainer>
   );
 };
 
