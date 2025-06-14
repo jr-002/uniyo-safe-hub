@@ -19,6 +19,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				display: ['Playfair Display', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -72,21 +76,30 @@ export default {
         error: 'hsl(var(--error))',
 			},
 			borderRadius: {
-        xl: 'calc(var(--radius) + 4px)', // New larger radius
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+					xl: 'calc(var(--radius) + 4px)',
+					lg: 'var(--radius)',
+					md: 'calc(var(--radius) - 2px)',
+					sm: 'calc(var(--radius) - 4px)'
 			},
-      boxShadow: { // Added more shadow options from CSS vars
-        xs: 'var(--shadow-xs)',
-        sm: 'var(--shadow-sm)',
-        DEFAULT: 'var(--shadow)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
-        xl: 'var(--shadow-xl)',
-        '2xl': 'var(--shadow-2xl)',
-        inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
-      },
+			boxShadow: {
+				xs: 'var(--shadow-xs)',
+				sm: 'var(--shadow-sm)',
+				DEFAULT: 'var(--shadow)',
+				md: 'var(--shadow-md)',
+				lg: 'var(--shadow-lg)',
+				xl: 'var(--shadow-xl)',
+				'2xl': 'var(--shadow-2xl)',
+				inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+			},
+			spacing: {
+				'space-2xs': '0.25rem',
+				'space-xs': '0.5rem',
+				'space-s': '0.75rem',
+				'space-m': '1.25rem',
+				'space-l': '2rem',
+				'space-xl': '2.5rem',
+				'space-2xl': '4rem',
+			},
 			keyframes: {
 				'accordion-down': {
 					from: { height: '0' },
@@ -135,4 +148,3 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

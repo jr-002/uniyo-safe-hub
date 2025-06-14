@@ -132,25 +132,23 @@ const Dashboard = () => {
   const displayName = user?.user_metadata?.full_name || user?.email;
 
   return (
-    <SidebarProvider defaultOpen={true}> {/* defaultOpen can be true or based on cookie */}
-      <div className="min-h-screen flex w-full bg-background">
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-uniuyo-red/10 via-background to-uniuyo-green/10">
         <AppSidebar />
-        <SidebarInset className="flex-1 flex flex-col overflow-y-auto"> {/* Manages padding & responsiveness */}
-          <header className="sticky top-0 z-10 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b md:hidden">
-             {/* Mobile sidebar trigger */}
+        <SidebarInset className="flex-1 flex flex-col overflow-y-auto main-content-area">
+          <header className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border md:hidden">
             <SidebarTrigger className="md:hidden"> 
               <Menu className="h-6 w-6" />
             </SidebarTrigger>
-            <h1 className="text-lg font-semibold">Dashboard</h1>
+            <h1 className="text-lg font-semibold font-display">Dashboard</h1>
           </header>
-          <main className="p-6 flex-grow">
-            {/* Header */}
-            <div className="mb-8 flex justify-between items-center">
+          <main className="px-6 py-7 flex-grow space-y-10">
+            <div className="mb-6 flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-foreground mb-1">
+                <h1 className="text-3xl font-display font-bold text-primary mb-0.5">
                   Welcome back, {displayName}!
                 </h1>
-                <p className="text-muted-foreground">Stay safe and connected with your campus community.</p>
+                <p className="text-muted-foreground text-base max-w-[36rem]">Stay safe and connected with your campus community.</p>
               </div>
               <SidebarTrigger className="hidden md:flex"> {/* Desktop sidebar trigger */}
                 <Menu className="h-6 w-6" />
@@ -158,63 +156,63 @@ const Dashboard = () => {
             </div>
 
             {/* Emergency Actions */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-destructive">Emergency Actions</h2>
-              <div className="grid md:grid-cols-2 gap-6"> {/* Increased gap */}
+            <section>
+              <h2 className="text-xl font-semibold font-display mb-4 text-destructive tracking-tight">Emergency Actions</h2>
+              <div className="grid md:grid-cols-2 gap-6">
                 {emergencyActions.map(({ icon: Icon, title, description, color, path }) => (
                   <EnhancedCard 
                     key={title} 
-                    variant="interactive" // Use EnhancedCard
+                    variant="interactive"
                     glowOnHover 
-                    className="p-0 overflow-hidden" // Remove padding for button to fill
+                    className="p-0 overflow-hidden shadow-lg"
                     onClick={() => navigate(path)}
                   >
                     <Button
-                      className={`w-full h-24 ${color} text-white text-lg font-semibold rounded-none flex items-center justify-start p-6`} // Adjusted styles
+                      className={`w-full h-24 ${color} text-white text-lg font-semibold rounded-none flex items-center justify-start p-6 shadow-none`}
                     >
-                      <Icon className="h-10 w-10 mr-4 shrink-0" /> {/* Larger icon */}
+                      <Icon className="h-10 w-10 mr-4 shrink-0 drop-shadow" />
                       <div className="text-left">
-                        <div className="text-xl">{title}</div>
+                        <div className="text-xl font-display leading-tight">{title}</div>
                         <div className="text-sm font-normal opacity-90">{description}</div>
                       </div>
                     </Button>
                   </EnhancedCard>
                 ))}
               </div>
-            </div>
+            </section>
 
             {/* Quick Actions */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-foreground">Quick Actions</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"> {/* Increased gap */}
+            <section>
+              <h2 className="text-xl font-semibold font-display mb-4 text-foreground tracking-tight">Quick Actions</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {quickActions.map(({ icon: Icon, title, description, path }) => (
                   <EnhancedCard 
                     key={title} 
-                    variant="elevated" // Use EnhancedCard
+                    variant="elevated"
                     glowOnHover
-                    className="text-center cursor-pointer transition-all hover:shadow-primary/20" 
+                    className="text-center cursor-pointer transition-all hover:shadow-primary/20 shadow"
                     onClick={() => navigate(path)}
                   >
-                    <Icon className="h-12 w-12 mx-auto text-primary mb-3 mt-2" /> {/* Use primary color */}
+                    <Icon className="h-12 w-12 mx-auto text-primary mb-3 mt-2 drop-shadow" />
                     <CardHeader className="p-4 pt-0 pb-2">
-                      <CardTitle className="text-lg">{title}</CardTitle>
+                      <CardTitle className="text-lg font-display">{title}</CardTitle>
                       <CardDescription className="text-xs">{description}</CardDescription>
                     </CardHeader>
                   </EnhancedCard>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* Recent Activity */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              <EnhancedCard variant="default"> {/* Use EnhancedCard */}
+            {/* Recent Activity and Community Stats */}
+            <section className="grid lg:grid-cols-2 gap-6">
+              <EnhancedCard variant="default" className="shadow">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-foreground">
+                  <CardTitle className="flex items-center text-foreground font-display text-lg">
                     <Bell className="h-5 w-5 mr-2 text-primary" />
                     Recent Alerts
                   </CardTitle>
                 </CardHeader>
-                <div className="p-6 pt-0"> {/* CardContent equivalent */}
+                <div className="p-6 pt-0">
                   <div className="space-y-4">
                     {recentAlerts.map((alert, index) => (
                       <div key={index} className="flex items-start space-x-3 p-3 bg-muted/50 rounded-lg">
@@ -239,31 +237,31 @@ const Dashboard = () => {
                 </div>
               </EnhancedCard>
 
-              <EnhancedCard variant="default"> {/* Use EnhancedCard */}
+              <EnhancedCard variant="default" className="shadow">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-foreground">
+                  <CardTitle className="flex items-center text-foreground font-display text-lg">
                     <Users className="h-5 w-5 mr-2 text-primary" />
                     Community Stats
                   </CardTitle>
                 </CardHeader>
-                <div className="p-6 pt-0"> {/* CardContent equivalent */}
+                <div className="p-6 pt-0">
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-4 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
                       <span className="font-medium text-foreground">Active Users Today</span>
-                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">1,247</span>
+                      <span className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-display">1,247</span>
                     </div>
                     <div className="flex justify-between items-center p-4 bg-green-500/10 dark:bg-green-500/20 rounded-lg">
                       <span className="font-medium text-foreground">Items Recovered</span>
-                      <span className="text-2xl font-bold text-green-600 dark:text-green-400">23</span>
+                      <span className="text-2xl font-bold text-green-600 dark:text-green-400 font-display">23</span>
                     </div>
                     <div className="flex justify-between items-center p-4 bg-orange-500/10 dark:bg-orange-500/20 rounded-lg">
                       <span className="font-medium text-foreground">Safety Reports</span>
-                      <span className="text-2xl font-bold text-orange-600 dark:text-orange-400">8</span>
+                      <span className="text-2xl font-bold text-orange-600 dark:text-orange-400 font-display">8</span>
                     </div>
                   </div>
                 </div>
               </EnhancedCard>
-            </div>
+            </section>
           </main>
         </SidebarInset>
       </div>

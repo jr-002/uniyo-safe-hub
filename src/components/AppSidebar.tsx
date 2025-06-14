@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -30,8 +29,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AppLogo = () => (
   <Link to="/dashboard" className="flex items-center gap-2 px-4 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:justify-center">
-    <Shield className="h-8 w-8 text-primary shrink-0" />
-    <span className="text-xl font-semibold text-foreground group-data-[collapsible=icon]:hidden">SafeHub</span>
+    <Shield className="h-8 w-8 text-primary shrink-0 drop-shadow" />
+    <span className="text-xl font-semibold font-display text-primary group-data-[collapsible=icon]:hidden tracking-tight">SafeHub</span>
   </Link>
 );
 
@@ -63,12 +62,12 @@ export function AppSidebar() {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar" className="border-r border-sidebar-border">
-      <SidebarHeader className="p-0 h-16 flex items-center justify-between border-b border-sidebar-border">
+    <Sidebar collapsible="icon" variant="sidebar" className="border-r border-sidebar-border bg-sidebar shadow-md z-30">
+      <SidebarHeader className="p-0 h-16 flex items-center justify-between border-b border-sidebar-border bg-sidebar/60">
         <AppLogo />
         {/* Mobile trigger is usually outside sidebar or part of top app bar not handled here */}
       </SidebarHeader>
-      <SidebarContent className="flex-grow p-2"> {/* Added padding to content */}
+      <SidebarContent className="flex-grow p-2 backdrop-blur-[var(--glass-blur)]"> {/* Added padding to content */}
         <SidebarGroup>
           <SidebarGroupLabel className="group-data-[collapsible=icon]:sr-only">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -134,14 +133,11 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="p-4 border-t border-sidebar-border group-data-[collapsible=icon]:p-2">
-        <p className="text-xs text-sidebar-foreground/70 text-center group-data-[collapsible=icon]:hidden">
+        <p className="text-xs text-sidebar-foreground/70 text-center font-display group-data-[collapsible=icon]:hidden">
           UniUyo SafeHub &copy; {new Date().getFullYear()}
         </p>
-        <p className="text-xs text-sidebar-foreground/70 text-center hidden group-data-[collapsible=icon]:block">
-          SH
-        </p>
+        <p className="text-xs text-sidebar-foreground/70 text-center hidden group-data-[collapsible=icon]:block font-display">SH</p>
       </SidebarFooter>
     </Sidebar>
   );
 }
-
