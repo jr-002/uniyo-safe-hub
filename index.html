@@ -1,23 +1,63 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UniUyo Safe Hub</title>
-    <meta name="description" content="University of Uyo Campus Safety Platform" />
-    <meta name="author" content="University of Uyo" />
-
-    <meta property="og:title" content="UniUyo Safe Hub" />
-    <meta property="og:description" content="University of Uyo Campus Safety Platform" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logonobg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@unicalofficial" />
-    <meta name="twitter:image" content="/logonobg.png" />
-    <link rel="icon" type="image/png" href="/logonobg.png" />
+    <title>UniUyo Guardian - Campus Safety Companion</title>
+    <meta name="description" content="Empowering University of Uyo students with cutting-edge safety tools, academic resources, and community support.">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#dc2626" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Guardian" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#dc2626" />
+    <meta name="msapplication-TileImage" content="/logo.png" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    
+    <!-- Performance Hints -->
+    <link rel="dns-prefetch" href="//dpgefrjmqmwyygkfyrrq.supabase.co" />
+    <link rel="preconnect" href="//dpgefrjmqmwyygkfyrrq.supabase.co" />
+    
+    <!-- Accessibility -->
+    <meta name="color-scheme" content="light dark" />
+    
+    <script>
+      // Register service worker for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+      
+      // Enhanced error tracking
+      window.addEventListener('error', (e) => {
+        console.error('Global error:', e.error);
+      });
+      
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('Unhandled promise rejection:', e.reason);
+      });
+    </script>
   </head>
-
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
