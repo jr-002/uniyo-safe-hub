@@ -34,7 +34,7 @@ export function PageContainer({
             {headerActions}
           </PageHeader>
           
-          <main className={`flex-grow ${className}`}>
+          <main className={`flex-grow ${className} animate-fade-in-up`}>
             {children}
           </main>
         </SidebarInset>

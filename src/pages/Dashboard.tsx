@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -20,6 +19,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -32,17 +32,7 @@ const Dashboard = () => {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Shield className="h-16 w-16 text-primary mx-auto animate-pulse-gentle" />
-          <div className="space-y-2">
-            <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse" />
-            <div className="h-3 bg-muted/70 rounded w-24 mx-auto animate-pulse" />
-          </div>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!user) return null;
@@ -142,12 +132,13 @@ const Dashboard = () => {
           </h2>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
-          {emergencyActions.map(({ icon: Icon, title, description, color, path }) => (
+          {emergencyActions.map(({ icon: Icon, title, description, color, path }, index) => (
             <EnhancedCard 
               key={title} 
               variant="interactive"
               glowOnHover 
-              className="p-0 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              className="p-0 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => navigate(path)}
             >
               <Button
@@ -175,12 +166,13 @@ const Dashboard = () => {
           </Button>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {quickActions.map(({ icon: Icon, title, description, path, badge }) => (
+          {quickActions.map(({ icon: Icon, title, description, path, badge }, index) => (
             <EnhancedCard 
               key={title} 
               variant="elevated"
               glowOnHover
-              className="text-center cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary/10"
+              className="text-center cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => navigate(path)}
             >
               <div className="p-6 space-y-4">
@@ -219,7 +211,11 @@ const Dashboard = () => {
           <div className="p-6">
             <div className="space-y-4">
               {recentAlerts.map((alert, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                <div 
+                  key={index} 
+                  className="flex items-start space-x-4 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors animate-fade-in-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
                   <Badge 
                     variant={alert.type === "warning" ? "destructive" : alert.type === "info" ? "secondary" : "default"}
                     className="capitalize shrink-0 mt-0.5"

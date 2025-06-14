@@ -1,4 +1,3 @@
-
 import { PageContainer } from "@/components/layout/PageContainer";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
@@ -272,7 +271,7 @@ const Directory = () => {
         </h2>
         
         {filteredContacts.length === 0 ? (
-          <EnhancedCard variant="default" className="shadow-lg">
+          <EnhancedCard variant="default" className="shadow-lg animate-fade-in">
             <CardContent className="p-12 text-center">
               <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">No contacts found</h3>
@@ -289,7 +288,12 @@ const Directory = () => {
         ) : (
           <div className="space-y-8">
             {filteredContacts.map((category, categoryIndex) => (
-              <EnhancedCard key={categoryIndex} variant="default" className="overflow-hidden shadow-lg">
+              <EnhancedCard 
+                key={categoryIndex} 
+                variant="default" 
+                className="overflow-hidden shadow-lg animate-fade-in-up"
+                style={{ animationDelay: `${categoryIndex * 150}ms` }}
+              >
                 <CardHeader className="bg-gradient-to-r from-muted/30 to-muted/10 border-b border-border/50">
                   <div className="flex items-center justify-between">
                     <div>
@@ -309,7 +313,8 @@ const Directory = () => {
                       <EnhancedCard 
                         key={contactIndex} 
                         variant="elevated" 
-                        className="bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                        className="bg-card hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-fade-in-up"
+                        style={{ animationDelay: `${contactIndex * 75}ms` }}
                       >
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between gap-4">
