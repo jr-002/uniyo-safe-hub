@@ -120,6 +120,12 @@
     --uniuyo-green: 90 50% 35%;
     --uniuyo-gold: 43 75% 60%;
 
+    /* Additional UI Colors - Dark Mode */
+    --success: 142 76% 46%;
+    --warning: 38 92% 60%;
+    --info: 217 91% 70%;
+    --error: 0 84% 70%;
+
     /* Glassmorphism properties - Dark Mode */
     --glass-blur: 10px;
     --glass-bg-color: rgba(30, 30, 30, 0.3);

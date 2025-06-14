@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Brain, Lightbulb, Loader2, Sparkles } from 'lucide-react';
+import { Search, Brain, Lightbulb, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 import { useSemanticSearch } from '@/hooks/useSemanticSearch';
 
 interface SemanticSearchProps {
@@ -47,7 +48,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
     <Card className="mb-6">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Brain className="h-5 w-5 text-purple-600" />
+          <Brain className="h-5 w-5 text-primary" />
           <span>AI-Powered Search</span>
           <Sparkles className="h-4 w-4 text-yellow-500" />
         </CardTitle>
@@ -58,7 +59,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
       <CardContent className="space-y-4">
         <div className="flex space-x-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Describe what you're looking for..."
               value={searchQuery}
@@ -70,7 +71,6 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
           <Button 
             onClick={handleSearch} 
             disabled={!searchQuery.trim() || isSearching}
-            className="bg-purple-600 hover:bg-purple-700"
           >
             {isSearching ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -87,13 +87,13 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
 
         {/* Search Examples */}
         <div className="flex flex-wrap gap-2">
-          <span className="text-sm text-gray-600">Try:</span>
+          <span className="text-sm text-muted-foreground">Try:</span>
           {searchExamples.slice(0, 3).map((example, index) => (
             <Button
               key={index}
               variant="ghost"
               size="sm"
-              className="h-auto py-1 px-2 text-xs text-purple-600 hover:bg-purple-50"
+              className="h-auto py-1 px-2 text-xs text-primary hover:bg-primary/10"
               onClick={() => setSearchQuery(example)}
             >
               "{example}"
@@ -103,7 +103,7 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
 
         {/* Search Results Summary */}
         {searchResults && (
-          <div className="space-y-3">
+          <div className="space-y-4 pt-4">
             <div className="flex items-center justify-between">
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <Brain className="h-3 w-3" />
@@ -112,19 +112,19 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
             </div>
 
             {searchResults.summary && (
-              <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+              <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
                 {searchResults.summary}
               </p>
             )}
 
             {/* Search Suggestions */}
             {searchResults.suggestions.length > 0 && (
-              <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="bg-info/5 p-3 rounded-lg border border-info/10">
                 <div className="flex items-center space-x-2 mb-2">
-                  <Lightbulb className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Suggestions</span>
+                  <Lightbulb className="h-4 w-4 text-info" />
+                  <span className="text-sm font-medium text-foreground">Suggestions</span>
                 </div>
-                <ul className="text-sm text-blue-700 space-y-1">
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   {searchResults.suggestions.map((suggestion, index) => (
                     <li key={index}>• {suggestion}</li>
                   ))}
@@ -134,17 +134,17 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
 
             {/* Match Details */}
             {searchResults.matches.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <h4 className="text-sm font-medium">Match Details:</h4>
                 {searchResults.matches.slice(0, 3).map((match, index) => (
-                  <div key={index} className="bg-green-50 p-2 rounded text-sm">
+                  <div key={index} className="bg-success/5 p-3 rounded text-sm border border-success/10">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium">Match {index + 1}</span>
-                      <Badge variant="outline" className="text-green-700">
+                      <Badge variant="outline" className="text-success border-success/50">
                         {match.score}% match
                       </Badge>
                     </div>
-                    <p className="text-gray-700">{match.reasoning}</p>
+                    <p className="text-muted-foreground">{match.reasoning}</p>
                     {match.highlights.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1">
                         {match.highlights.map((highlight, i) => (
@@ -162,8 +162,11 @@ export const SemanticSearch = ({ items, onSearchResults, searchType = 'both' }: 
         )}
 
         {error && (
-          <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-            Error: {error}
+          <div className="text-destructive-foreground text-sm bg-destructive p-3 rounded-lg">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              <span>Error: {error}</span>
+            </div>
           </div>
         )}
       </CardContent>
