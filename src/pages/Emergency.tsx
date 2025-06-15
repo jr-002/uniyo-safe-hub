@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -6,9 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertTriangle, Phone, MapPin, Clock, Users, Shield, Brain } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertTriangle, Phone, MapPin, Clock, Users, Shield, Brain, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useOfflineEmergency } from "@/hooks/useOfflineEmergency";
 import AIEmergencyContext from "@/components/emergency/AIEmergencyContext";
+import CampusSafetyMap from "@/components/safety/CampusSafetyMap";
+import { EmergencySOSButton } from "@/components/emergency/EmergencySOSButton";
 
 const Emergency = () => {
   const [isSOSActive, setIsSOSActive] = useState(false);
@@ -18,11 +22,38 @@ const Emergency = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const { isRegistered, sendEmergencyAlert } = usePushNotifications();
+  const { isOnline, triggerOfflineEmergency, offlineQueue } = useOfflineEmergency();
+
   const activateSOS = () => {
+    if (!isOnline) {
+      // Handle offline emergency
+      const offlineId = triggerOfflineEmergency('sos', {
+        emergencyContact,
+        aiContext,
+        timestamp: new Date().toISOString()
+      });
+      
+      toast({
+        title: "🚨 Offline Emergency Queued",
+        description: "Emergency alert saved. Will be sent when connection is restored.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSOSActive(true);
     setSosTimer(30);
     
-    // Simulate getting location
+    // Trigger push notification if registered
+    if (isRegistered) {
+      sendEmergencyAlert({
+        type: 'emergency',
+        message: 'SOS Alert activated',
+        urgency: 'high'
+      });
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -39,7 +70,6 @@ const Emergency = () => {
           variant: "destructive",
         });
 
-        // Simulate countdown
         const countdown = setInterval(() => {
           setSosTimer((prev) => {
             if (prev <= 1) {
@@ -84,134 +114,166 @@ const Emergency = () => {
       <div className="lg:ml-64 pb-20 lg:pb-8">
         <div className="p-6">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-red-700 mb-2">Emergency Center</h1>
-            <p className="text-gray-600">Quick access to emergency services and SOS alerts with AI-powered context</p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* SOS Button */}
-            <Card className="border-red-200">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl text-red-700">Emergency SOS</CardTitle>
-                <CardDescription>
-                  Press and hold for 3 seconds to send emergency alert with your location
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                {!isSOSActive ? (
-                  <Button
-                    className="w-48 h-48 rounded-full bg-red-500 hover:bg-red-600 text-white text-2xl font-bold shadow-lg hover:shadow-xl transition-all"
-                    onMouseDown={() => {
-                      setTimeout(activateSOS, 3000);
-                    }}
-                    onTouchStart={() => {
-                      setTimeout(activateSOS, 3000);
-                    }}
-                  >
-                    <div className="flex flex-col items-center">
-                      <AlertTriangle className="h-16 w-16 mb-2" />
-                      <span>SOS</span>
-                      <span className="text-sm font-normal">Hold for 3s</span>
-                    </div>
-                  </Button>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="w-48 h-48 mx-auto rounded-full bg-red-500 text-white flex items-center justify-center animate-pulse">
-                      <div className="text-center">
-                        <AlertTriangle className="h-16 w-16 mb-2 mx-auto" />
-                        <div className="text-2xl font-bold">SOS ACTIVE</div>
-                        <div className="text-lg">{sosTimer}s</div>
-                      </div>
-                    </div>
-                    <Button variant="outline" onClick={cancelSOS}>
-                      Cancel SOS
-                    </Button>
-                  </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-red-700 mb-2">Emergency Center</h1>
+                <p className="text-gray-600">Quick access to emergency services and SOS alerts with AI-powered context</p>
+              </div>
+              
+              {/* Connection Status */}
+              <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
+                isOnline 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {isOnline ? <Wifi className="h-4 w-4" /> : <WifiOff className="h-4 w-4" />}
+                <span>{isOnline ? 'Online' : 'Offline'}</span>
+                {!isOnline && offlineQueue.length > 0 && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                    {offlineQueue.length} queued
+                  </span>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* AI Emergency Context */}
-            <AIEmergencyContext
-              emergencyType="SOS"
-              onContextGenerated={setAiContext}
-            />
+              </div>
+            </div>
           </div>
 
-          {/* Emergency Contacts Setup */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="h-5 w-5 mr-2" />
-                Emergency Contact
-              </CardTitle>
-              <CardDescription>
-                Add a personal emergency contact for SOS alerts
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="emergency-contact">Emergency Contact Number</Label>
-                  <Input
-                    id="emergency-contact"
-                    placeholder="+234 800 123 4567"
-                    value={emergencyContact}
-                    onChange={(e) => setEmergencyContact(e.target.value)}
-                  />
-                </div>
-                <Button className="w-full">Save Emergency Contact</Button>
-              </div>
-            </CardContent>
-          </Card>
+          <Tabs defaultValue="emergency" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="emergency">Emergency SOS</TabsTrigger>
+              <TabsTrigger value="map">Campus Safety Map</TabsTrigger>
+              <TabsTrigger value="contacts">Emergency Contacts</TabsTrigger>
+            </TabsList>
 
-          {/* Quick Emergency Contacts */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Phone className="h-5 w-5 mr-2" />
-                Emergency Services
-              </CardTitle>
-              <CardDescription>
-                Tap to call emergency services directly
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                {emergencyContacts.map((contact, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold">{contact.name}</h3>
-                          <p className="text-sm text-gray-600">{contact.type}</p>
-                          <p className="text-lg font-mono">{contact.number}</p>
-                        </div>
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => window.open(`tel:${contact.number}`)}
-                        >
-                          <Phone className="h-4 w-4" />
-                        </Button>
+            <TabsContent value="emergency" className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Enhanced SOS Button */}
+                <Card className="border-red-200">
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl text-red-700">Emergency SOS</CardTitle>
+                    <CardDescription>
+                      Press and hold for emergency alert with location and AI context
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-center space-y-4">
+                    <EmergencySOSButton 
+                      onEmergencyTriggered={(location) => {
+                        if (location) {
+                          activateSOS();
+                        }
+                      }}
+                      className="mx-auto"
+                    />
+                    
+                    {!isOnline && (
+                      <div className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
+                        <WifiOff className="h-4 w-4 inline mr-2" />
+                        Offline mode: Emergency will be queued and sent when connection is restored
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* AI Emergency Context */}
+                <AIEmergencyContext
+                  emergencyType="SOS"
+                  onContextGenerated={setAiContext}
+                />
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Emergency Contact Setup */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Users className="h-5 w-5 mr-2" />
+                    Emergency Contact
+                  </CardTitle>
+                  <CardDescription>
+                    Add a personal emergency contact for SOS alerts
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="emergency-contact">Emergency Contact Number</Label>
+                      <Input
+                        id="emergency-contact"
+                        placeholder="+234 800 123 4567"
+                        value={emergencyContact}
+                        onChange={(e) => setEmergencyContact(e.target.value)}
+                      />
+                    </div>
+                    <Button className="w-full">Save Emergency Contact</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="map">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <MapPin className="h-5 w-5 mr-2" />
+                    Campus Safety Map
+                  </CardTitle>
+                  <CardDescription>
+                    View emergency stations, safe zones, and reported incidents across campus
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CampusSafetyMap height="500px" />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="contacts">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Phone className="h-5 w-5 mr-2" />
+                    Emergency Services
+                  </CardTitle>
+                  <CardDescription>
+                    Tap to call emergency services directly
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {emergencyContacts.map((contact, index) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="font-semibold">{contact.name}</h3>
+                              <p className="text-sm text-gray-600">{contact.type}</p>
+                              <p className="text-lg font-mono">{contact.number}</p>
+                            </div>
+                            <Button
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700"
+                              onClick={() => window.open(`tel:${contact.number}`)}
+                            >
+                              <Phone className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
 
           {/* Safety Tips */}
           <Card className="mt-8">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Shield className="h-5 w-5 mr-2" />
-                Safety Tips & AI Features
+                Safety Tips & Enhanced Features
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 gap-6">
                 <div className="space-y-3 text-sm">
                   <h3 className="font-semibold text-green-700">Safety Tips</h3>
                   <div className="flex items-start space-x-2">
@@ -226,13 +288,9 @@ const Emergency = () => {
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                     <p>Trust your instincts - if something feels wrong, seek help</p>
                   </div>
-                  <div className="flex items-start space-x-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <p>Use well-lit and populated routes, especially at night</p>
-                  </div>
                 </div>
                 <div className="space-y-3 text-sm">
-                  <h3 className="font-semibold text-orange-700">AI-Enhanced Emergency Features</h3>
+                  <h3 className="font-semibold text-orange-700">AI-Enhanced Features</h3>
                   <div className="flex items-start space-x-2">
                     <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
                     <p>AI generates context for emergency responders</p>
@@ -245,9 +303,20 @@ const Emergency = () => {
                     <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
                     <p>Recent campus incident analysis for better response</p>
                   </div>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <h3 className="font-semibold text-purple-700">New Features</h3>
                   <div className="flex items-start space-x-2">
-                    <Brain className="h-4 w-4 text-orange-500 mt-0.5" />
-                    <p>Intelligent emergency contact prioritization</p>
+                    <Wifi className="h-4 w-4 text-purple-500 mt-0.5" />
+                    <p>Push notifications for emergency alerts</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <WifiOff className="h-4 w-4 text-purple-500 mt-0.5" />
+                    <p>Offline emergency mode with sync when online</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <MapPin className="h-4 w-4 text-purple-500 mt-0.5" />
+                    <p>Interactive campus safety map</p>
                   </div>
                 </div>
               </div>
