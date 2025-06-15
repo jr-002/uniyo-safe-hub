@@ -195,11 +195,33 @@
   .animate-slide-in-left {
     animation: slideInLeft 0.4s ease-out;
   }
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+  .animate-slide-out-right {
+    animation: slideOutRight 0.3s ease-out;
+  }
   .animate-scale-in {
     animation: scaleIn 0.2s ease-out;
   }
   .animate-pulse-gentle {
     animation: pulseGentle 2s ease-in-out infinite;
+  }
+
+  /* Touch Target Optimization */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Swipe indicators */
+  .swipe-indicator {
+    @apply relative overflow-hidden;
+  }
+  
+  .swipe-indicator::after {
+    content: '';
+    @apply absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-transparent via-primary/20 to-transparent;
+    animation: swipeHint 2s ease-in-out infinite;
   }
 
   /* Glassmorphism Card Style */
@@ -213,16 +235,16 @@
   }
   
   .card-interactive {
-    @apply card-elevated hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
+    @apply card-elevated hover:scale-[1.02] active:scale-[0.98] cursor-pointer touch-target;
   }
   
   /* Enhanced Button Styles */
   .btn-emergency {
-    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 transition-all duration-200;
+    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 transition-all duration-200 touch-target;
   }
   
   .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 active:scale-100 transition-all duration-200;
+    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 active:scale-100 transition-all duration-200 touch-target;
   }
 
   /* Status Badge Styles */
@@ -255,6 +277,16 @@
   .main-content-area {
     @apply flex-1 transition-all duration-300 ease-in-out;
   }
+
+  /* Accessibility improvements */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+  
+  /* Focus improvements */
+  .focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+  }
 }
 
 @keyframes fadeIn {
@@ -277,6 +309,16 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
@@ -285,4 +327,18 @@
 @keyframes pulseGentle {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(0.98); }
+}
+
+@keyframes swipeHint {
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  50% { opacity: 0.8; transform: translateX(-10px); }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
