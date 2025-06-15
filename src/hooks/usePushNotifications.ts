@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -44,12 +43,8 @@ export const usePushNotifications = () => {
         setToken(token.value);
         setIsRegistered(true);
 
-        // Store token in database for user
-        if (user) {
-          // TODO: Re-enable when/if you add a user_push_tokens table to your DB schema
-          // storePushToken(token.value);
-          console.warn("[PushNotifications] Not saving push token to Supabase. Table 'user_push_tokens' not found in schema.");
-        }
+        // IMPORTANT: Not saving push token to Supabase, since user_push_tokens table does not exist.
+        // If you add this table in the future, implement the storage logic here.
       });
 
       PushNotifications.addListener('registrationError', (error) => {
@@ -82,24 +77,6 @@ export const usePushNotifications = () => {
   const registerForPushNotifications = async () => {
     await PushNotifications.register();
   };
-
-  // Disabled for now as table does not exist!
-  // const storePushToken = async (tokenValue: string) => {
-  //   if (!user) return;
-  //   try {
-  //     const { error } = await supabase
-  //       .from('user_push_tokens')
-  //       .upsert({
-  //         user_id: user.id,
-  //         token: tokenValue,
-  //         platform: 'web',
-  //         updated_at: new Date().toISOString(),
-  //       });
-  //     if (error) throw error;
-  //   } catch (error) {
-  //     console.error('Error storing push token:', error);
-  //   }
-  // };
 
   const showLocalNotification = async (payload: NotificationPayload) => {
     try {
