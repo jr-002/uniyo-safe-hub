@@ -79,9 +79,15 @@ export const usePersonalization = () => {
     category: T,
     updates: Partial<UserPreferences[T]>
   ) => {
+    const currentCategoryValue = preferences[category];
+    const updatedCategoryValue = { 
+      ...(currentCategoryValue as Record<string, any>), 
+      ...(updates as Record<string, any>) 
+    } as UserPreferences[T];
+    
     updatePreferences({
-      [category]: { ...preferences[category], ...updates }
-    });
+      [category]: updatedCategoryValue
+    } as Partial<UserPreferences>);
   };
 
   const resetPreferences = () => {
