@@ -20,6 +20,7 @@ export const usePushNotifications = () => {
 
   useEffect(() => {
     initializePushNotifications();
+    // eslint-disable-next-line
   }, [user]);
 
   const initializePushNotifications = async () => {
@@ -42,10 +43,12 @@ export const usePushNotifications = () => {
         console.log('Push registration success, token: ' + token.value);
         setToken(token.value);
         setIsRegistered(true);
-        
+
         // Store token in database for user
         if (user) {
-          storePushToken(token.value);
+          // TODO: Re-enable when/if you add a user_push_tokens table to your DB schema
+          // storePushToken(token.value);
+          console.warn("[PushNotifications] Not saving push token to Supabase. Table 'user_push_tokens' not found in schema.");
         }
       });
 
@@ -80,24 +83,23 @@ export const usePushNotifications = () => {
     await PushNotifications.register();
   };
 
-  const storePushToken = async (tokenValue: string) => {
-    if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from('user_push_tokens')
-        .upsert({
-          user_id: user.id,
-          token: tokenValue,
-          platform: 'web',
-          updated_at: new Date().toISOString(),
-        });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error storing push token:', error);
-    }
-  };
+  // Disabled for now as table does not exist!
+  // const storePushToken = async (tokenValue: string) => {
+  //   if (!user) return;
+  //   try {
+  //     const { error } = await supabase
+  //       .from('user_push_tokens')
+  //       .upsert({
+  //         user_id: user.id,
+  //         token: tokenValue,
+  //         platform: 'web',
+  //         updated_at: new Date().toISOString(),
+  //       });
+  //     if (error) throw error;
+  //   } catch (error) {
+  //     console.error('Error storing push token:', error);
+  //   }
+  // };
 
   const showLocalNotification = async (payload: NotificationPayload) => {
     try {

@@ -12,6 +12,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@capacitor/local-notifications": "^7.0.1",
     "@capacitor/push-notifications": "^7.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@langchain/community": "^0.3.45",
