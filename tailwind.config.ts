@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -132,6 +131,18 @@ export default {
         'pulse-gentle': {
           '0%, 100%': { opacity: '1', transform: 'scale(1)'},
           '50%': { opacity: '0.8', transform: 'scale(0.98)'},
+        },
+        'slide-in-right': {
+           from: { opacity: '0', transform: 'translateX(100%)' },
+           to: { opacity: '1', transform: 'translateX(0)' },
+        },
+        'slide-out-right': {
+           from: { opacity: '1', transform: 'translateX(0)' },
+           to: { opacity: '0', transform: 'translateX(100%)' },
+        },
+        'bounce-gentle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
         }
 			},
 			animation: {
@@ -143,9 +154,11 @@ export default {
         'slide-in-left': 'slide-in-left 0.4s ease-out',
         'scale-in': 'scale-in 0.2s ease-out',
         'pulse-gentle': 'pulse-gentle 2s ease-in-out infinite',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
+        'slide-out-right': 'slide-out-right 0.3s ease-out',
+        'bounce-gentle': 'bounce-gentle 1s ease-in-out infinite',
 			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -20,6 +19,7 @@ import SafetyTimerPage from "./pages/SafetyTimer";
 import AuthCallback from "./pages/AuthCallback";
 import VerificationPending from "./pages/VerificationPending";
 import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 // Optimized query client with better cache management
 const queryClient = new QueryClient({
@@ -44,68 +44,70 @@ const queryClient = new QueryClient({
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={
-              <ErrorBoundary>
-                <Dashboard />
-              </ErrorBoundary>
-            } />
-            <Route path="/emergency" element={
-              <ErrorBoundary>
-                <Emergency />
-              </ErrorBoundary>
-            } />
-            <Route path="/reports" element={
-              <ErrorBoundary>
-                <Reports />
-              </ErrorBoundary>
-            } />
-            <Route path="/alerts" element={
-              <ErrorBoundary>
-                <Alerts />
-              </ErrorBoundary>
-            } />
-            <Route path="/directory" element={
-              <ErrorBoundary>
-                <Directory />
-              </ErrorBoundary>
-            } />
-            <Route path="/lost-found" element={
-              <ErrorBoundary>
-                <LostFound />
-              </ErrorBoundary>
-            } />
-            <Route path="/updates" element={
-              <ErrorBoundary>
-                <Updates />
-              </ErrorBoundary>
-            } />
-            <Route path="/resources" element={
-              <ErrorBoundary>
-                <Resources />
-              </ErrorBoundary>
-            } />
-            <Route path="/profile" element={
-              <ErrorBoundary>
-                <Profile />
-              </ErrorBoundary>
-            } />
-            <Route path="/safety-timer" element={
-              <ErrorBoundary>
-                <SafetyTimerPage />
-              </ErrorBoundary>
-            } />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/verification-pending" element={<VerificationPending />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <ThemeProvider defaultTheme="system" storageKey="uniuyo-ui-theme">
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={
+                <ErrorBoundary>
+                  <Dashboard />
+                </ErrorBoundary>
+              } />
+              <Route path="/emergency" element={
+                <ErrorBoundary>
+                  <Emergency />
+                </ErrorBoundary>
+              } />
+              <Route path="/reports" element={
+                <ErrorBoundary>
+                  <Reports />
+                </ErrorBoundary>
+              } />
+              <Route path="/alerts" element={
+                <ErrorBoundary>
+                  <Alerts />
+                </ErrorBoundary>
+              } />
+              <Route path="/directory" element={
+                <ErrorBoundary>
+                  <Directory />
+                </ErrorBoundary>
+              } />
+              <Route path="/lost-found" element={
+                <ErrorBoundary>
+                  <LostFound />
+                </ErrorBoundary>
+              } />
+              <Route path="/updates" element={
+                <ErrorBoundary>
+                  <Updates />
+                </ErrorBoundary>
+              } />
+              <Route path="/resources" element={
+                <ErrorBoundary>
+                  <Resources />
+                </ErrorBoundary>
+              } />
+              <Route path="/profile" element={
+                <ErrorBoundary>
+                  <Profile />
+                </ErrorBoundary>
+              } />
+              <Route path="/safety-timer" element={
+                <ErrorBoundary>
+                  <SafetyTimerPage />
+                </ErrorBoundary>
+              } />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/verification-pending" element={<VerificationPending />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );
