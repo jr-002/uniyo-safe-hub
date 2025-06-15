@@ -33,15 +33,15 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 343 75% 32%; /* UniUyo Red for focus rings */
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     /* Sidebar Specific Colors */
-    --sidebar-background: 0 0% 98%; /* Light gray for sidebar */
-    --sidebar-foreground: 240 5.3% 26.1%; /* Darker text for readability */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-primary: hsl(var(--primary)); /* Use main primary color */
+    --sidebar-primary: hsl(var(--primary));
     --sidebar-primary-foreground: hsl(var(--primary-foreground));
-    --sidebar-accent: 240 4.8% 92.9%; /* Slightly darker accent for hover */
+    --sidebar-accent: 240 4.8% 92.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-ring: hsl(var(--ring));
 
@@ -67,69 +67,72 @@
 
     /* Glassmorphism properties */
     --glass-blur: 10px;
-    --glass-bg-color: rgba(255, 255, 255, 0.3);
-    --glass-border-color: rgba(255, 255, 255, 0.5);
-
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-display: 'Playfair Display', serif;
-    --line-height-tight: 1.1;
-    --transition-faster: 140ms cubic-bezier(0.4,0,0.2,1);
+    --glass-bg-color: rgba(255, 255, 255, 0.8);
+    --glass-border-color: rgba(255, 255, 255, 0.9);
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 217.2 32.6% 8.5%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 217.2 32.6% 8.5%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 343 75% 45%; /* Brighter UniUyo Red for dark mode */
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 343 75% 55%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217.2 32.6% 12.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 217.2 32.6% 12.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217.2 32.6% 15.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 60.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 343 75% 45%; /* Brighter UniUyo Red for focus rings in dark mode */
+    --border: 217.2 32.6% 15.5%;
+    --input: 217.2 32.6% 15.5%;
+    --ring: 343 75% 55%;
     
     /* Sidebar Specific Colors - Dark Mode */
-    --sidebar-background: 240 5.9% 10%; /* Darker sidebar */
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-background: 217.2 32.6% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 12%;
     --sidebar-primary: hsl(var(--primary));
-    --sidebar-primary-foreground: 0 0% 98%; /* Ensure contrast */
-    --sidebar-accent: 240 3.7% 20.9%; /* Slightly lighter accent for hover */
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-primary-foreground: hsl(var(--primary-foreground));
+    --sidebar-accent: 217.2 32.6% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-ring: hsl(var(--ring));
 
     /* Enhanced UniUyo Brand Colors - Dark Mode */
-    --uniuyo-red: 343 75% 45%;
-    --uniuyo-green: 90 50% 35%;
-    --uniuyo-gold: 43 75% 60%;
+    --uniuyo-red: 343 75% 55%;
+    --uniuyo-green: 90 50% 45%;
+    --uniuyo-gold: 43 75% 65%;
 
     /* Additional UI Colors - Dark Mode */
-    --success: 142 76% 46%;
-    --warning: 38 92% 60%;
-    --info: 217 91% 70%;
+    --success: 142 76% 50%;
+    --warning: 38 92% 65%;
+    --info: 217 91% 75%;
     --error: 0 84% 70%;
 
+    /* Enhanced Shadows for Dark Mode */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.25), 0 2px 4px -2px rgb(0 0 0 / 0.25);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.35), 0 8px 10px -6px rgb(0 0 0 / 0.35);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+
     /* Glassmorphism properties - Dark Mode */
-    --glass-blur: 10px;
-    --glass-bg-color: rgba(30, 30, 30, 0.3);
-    --glass-border-color: rgba(50, 50, 50, 0.5);
+    --glass-bg-color: rgba(15, 23, 42, 0.8);
+    --glass-border-color: rgba(71, 85, 105, 0.5);
   }
 }
 
@@ -138,42 +141,44 @@
     @apply border-border;
     box-sizing: border-box;
   }
+  
   html {
-    font-family: var(--font-sans);
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1.5;
+    scroll-behavior: smooth;
   }
-  h1, h2, h3, h4 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: var(--line-height-tight);
-  }
-  h1 { font-size: 2.575rem; }
-  h2 { font-size: 2.075rem; }
-  h3 { font-size: 1.450rem; }
-  h4 { font-size: 1.150rem; }
+  
   body {
-    @apply bg-background text-foreground antialiased; /* Added antialiased for smoother fonts */
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
-    letter-spacing: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  p {
-    margin-bottom: 1.1em;
-    font-size: 1.02rem;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
   }
+
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+
   /* Enhanced scroll bars */
   ::-webkit-scrollbar {
-    width: 8px; /* Slightly wider */
+    width: 8px;
     height: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    @apply bg-muted/50; /* More subtle track */
+    @apply bg-background;
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-full; /* More prominent thumb */
+    @apply bg-muted-foreground/30 rounded-full;
   }
   
   ::-webkit-scrollbar-thumb:hover {
@@ -182,156 +187,80 @@
 }
 
 @layer components {
-  /* Enhanced Animation Classes */
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out;
-  }
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
-  }
-  .animate-slide-in-left {
-    animation: slideInLeft 0.4s ease-out;
-  }
-  .animate-slide-in-right {
-    animation: slideInRight 0.3s ease-out;
-  }
-  .animate-slide-out-right {
-    animation: slideOutRight 0.3s ease-out;
-  }
-  .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
-  }
-  .animate-pulse-gentle {
-    animation: pulseGentle 2s ease-in-out infinite;
-  }
-
-  /* Touch Target Optimization */
-  .touch-target {
-    @apply min-h-[44px] min-w-[44px];
+  /* Enhanced Card Styles */
+  .card-enhanced {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300;
   }
   
-  /* Swipe indicators */
-  .swipe-indicator {
-    @apply relative overflow-hidden;
-  }
-  
-  .swipe-indicator::after {
-    content: '';
-    @apply absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-transparent via-primary/20 to-transparent;
-    animation: swipeHint 2s ease-in-out infinite;
+  .card-interactive {
+    @apply card-enhanced hover:scale-[1.02] active:scale-[0.98] cursor-pointer;
   }
 
   /* Glassmorphism Card Style */
   .glassmorphic-card {
-    @apply bg-[var(--glass-bg-color)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border-color)] rounded-xl shadow-lg;
-  }
-  
-  /* Enhanced Card Styles */
-  .card-elevated {
-    @apply bg-card border border-border/50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
-  }
-  
-  .card-interactive {
-    @apply card-elevated hover:scale-[1.02] active:scale-[0.98] cursor-pointer touch-target;
+    @apply bg-[var(--glass-bg-color)] backdrop-blur-lg border border-[var(--glass-border-color)] rounded-xl shadow-lg;
   }
   
   /* Enhanced Button Styles */
-  .btn-emergency {
-    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 transition-all duration-200 touch-target;
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 active:scale-100 transition-all duration-200;
   }
   
-  .btn-success {
-    @apply bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 active:scale-100 transition-all duration-200 touch-target;
-  }
-
-  /* Status Badge Styles */
-  .badge {
-    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-  }
-
-  .badge[data-variant="default"] {
-    @apply bg-secondary text-secondary-foreground border-transparent;
-  }
-
-  .badge[data-variant="destructive"] {
-    @apply bg-destructive text-destructive-foreground border-transparent;
-  }
-
-  .badge[data-variant="outline"] {
-    @apply text-foreground;
+  .btn-emergency {
+    @apply bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-100 transition-all duration-200;
   }
 
   /* Enhanced Gradient Backgrounds */
   .gradient-uniuyo {
-    @apply bg-gradient-to-br from-red-50 via-white to-green-50 dark:from-uniuyo-red/10 dark:via-background dark:to-uniuyo-green/10;
+    @apply bg-gradient-to-br from-red-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900;
   }
   
   .gradient-card {
-    @apply bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-800 dark:to-gray-900/50;
+    @apply bg-gradient-to-br from-card to-card/50 dark:from-card dark:to-card/80;
   }
 
-  /* Main content area for sidebar layout */
+  /* Main content area improvements */
   .main-content-area {
-    @apply flex-1 transition-all duration-300 ease-in-out;
+    @apply flex-1 transition-all duration-300 ease-in-out overflow-hidden;
   }
 
-  /* Accessibility improvements */
-  .sr-only {
-    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  /* Enhanced animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
   }
   
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
   /* Focus improvements */
   .focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Touch target optimization */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(100%); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideOutRight {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(100%); }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes pulseGentle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(0.98); }
-}
-
-@keyframes swipeHint {
-  0%, 100% { opacity: 0.3; transform: translateX(0); }
-  50% { opacity: 0.8; transform: translateX(-10px); }
 }
 
 /* Reduced motion preferences */

@@ -147,7 +147,7 @@ const Index = () => {
         <div className="text-center animate-fade-in">
           <Shield className="h-16 w-16 text-uniuyo-red mx-auto mb-4 animate-pulse-gentle" />
           <LoadingSpinner size="lg" className="mb-4" />
-          <p className="text-lg text-gray-600">Loading UniUyo Guardian...</p>
+          <p className="text-lg text-foreground/70">Loading UniUyo Guardian...</p>
         </div>
       </div>
     );
@@ -164,13 +164,13 @@ const Index = () => {
               <Sparkles className="h-6 w-6 text-uniuyo-gold absolute -top-2 -right-2 animate-pulse" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2 bg-gradient-to-r from-uniuyo-red to-uniuyo-green bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold text-foreground mb-2 bg-gradient-to-r from-uniuyo-red to-uniuyo-green bg-clip-text text-transparent">
                 UniUyo Guardian
               </h1>
               <p className="text-xl text-uniuyo-red font-medium">Your Campus Safety Companion</p>
             </div>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Empowering University of Uyo students with cutting-edge safety tools, academic resources, 
             and community support - all in one secure, intelligent platform.
           </p>
@@ -261,19 +261,19 @@ const Index = () => {
 
         {/* Enhanced Auth Section */}
         <div className="max-w-md mx-auto animate-scale-in">
-          <EnhancedCard variant="gradient" className="border-t-4 border-t-uniuyo-red shadow-xl">
+          <EnhancedCard variant="gradient" className="border-t-4 border-t-uniuyo-red shadow-xl card-enhanced">
             <CardHeader>
               <CardTitle className="text-center text-uniuyo-red flex items-center justify-center">
                 <Shield className="h-5 w-5 mr-2" />
                 Get Started
               </CardTitle>
-              <CardDescription className="text-center">
+              <CardDescription className="text-center text-muted-foreground">
                 Join the UniUyo Guardian community for a safer campus experience
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted">
                   <TabsTrigger value="login" className="transition-all duration-200">Login</TabsTrigger>
                   <TabsTrigger value="register" className="transition-all duration-200">Register</TabsTrigger>
                 </TabsList>
@@ -435,8 +435,8 @@ const Index = () => {
 
         {/* Trust Indicators */}
         <div className="mt-16 text-center animate-fade-in">
-          <p className="text-sm text-gray-500 mb-4">Trusted by thousands of UniUyo students</p>
-          <div className="flex justify-center space-x-8 text-gray-400">
+          <p className="text-sm text-muted-foreground mb-4">Trusted by thousands of UniUyo students</p>
+          <div className="flex justify-center space-x-8 text-muted-foreground">
             <div className="flex items-center">
               <Shield className="h-4 w-4 mr-1" />
               <span className="text-xs">Secure</span>

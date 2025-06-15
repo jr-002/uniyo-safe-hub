@@ -61,7 +61,9 @@ export function ThemeProvider({
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
+      <div className={`min-h-screen transition-colors duration-300 ${isDarkMode() ? 'dark' : ''}`}>
+        {children}
+      </div>
     </ThemeProviderContext.Provider>
   );
 }
